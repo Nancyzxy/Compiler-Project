@@ -5,8 +5,20 @@
     void yyerror(const char*);
 %}
 %token INT FLOAT CHAR ID
-%token TYPE STRUCT IF ELSE WHILE RETURN DOT SEMI COMMA ASSIGN
-%token LT LE GT GE NE EQ PLUS MINUS MUL DIV AND OR NOT LP RP LB RB LC RC     
+%token TYPE STRUCT IF WHILE RETURN SEMI COMMA
+
+%nonassoc LOWER_ELSE
+%nonassoc ELSE
+
+%right ASSIGN
+%left OR
+%left AND
+%left NE EQ
+%left LT LE GT GE
+%left PLUS MINUS
+%left MUL DIV
+%right NOT
+%left LP RP LB RB LC RC DOT    
 %%
 
 Program : ExtDefList;
@@ -61,7 +73,7 @@ StmtList: Stmt StmtList
 Stmt: Exp SEMI
     | CompSt
     | RETURN Exp SEMI
-    | IF LP Exp RP Stmt
+    | IF LP Exp RP Stmt %prec LOWER_ELSE
     | IF LP Exp RP Stmt ELSE Stmt
     | WHILE LP Exp RP Stmt
     ;
