@@ -2,6 +2,7 @@
     #include "syntax.tab.h"
     #include "stdlib.h"
     #include <string.h>
+    int lines = 0;
 %}
 
 letter [a-zA-Z]
@@ -39,15 +40,17 @@ digit [0-9]
 "{" { return LC; }
 "}" { return RC; }
 
-{digit}{digit}*"."{digit}{digit}* {return FLOAT;}
-{digit}*|("0x"|"0X")((digit)|("a"|"b"|"c"|"d"|"e"|"f"))* {
-	if(strlen(yytext) != 1 && yytext[0] == '0' && (yytext[1] != 'x' || yytext[1] != 'X')){
+{digit}{digit}*"\."{digit}{digit}* {return FLOAT;}
+{digit}*|("0x"|"0X")({digit}|"a"|"b"|"c"|"d"|"e"|"f")({digit}|"a"|"b"|"c"|"d"|"e"|"f")* {
+	if(strlen(yytext) != 1 && yytext[0] == '0' && yytext[1] != 'x' && yytext[1] != 'X'){
 		printf("%s\n","Invalid Int");
 	}
-	else if(strlen(yytext) > 3 && yytext[0] == '0' && (yytext[1] == 'x' || yytext[1] == 'X') 			&& yytext[2] == '0'){
+	else if(strlen(yytext) > 3 && yytext[0] == '0' && (yytext[1] == 'x' || yytext[1] == 'X')&& yytext[2] == '0'){
 		printf("%s\n", "Invalid int");		
-	}return INT;}
+	}else return INT;}
 {letter_}({letter_}|{digit})* {printf("ID %s\n", yytext);return ID;} 
 \'{letter}\' {return CHAR;}
-"\n"|"\t"|"\r" {}
+\n {lines++;}
+[\t\r ]+ {}
+<<EOF>> {yyterminate();}
 %%
