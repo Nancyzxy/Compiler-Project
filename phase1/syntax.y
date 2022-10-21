@@ -1,12 +1,21 @@
 %{
     #include "lex.yy.c"
+    #include "node.h"
     #define EXIT_OK 0
     #define EXIT_FAIL 1
     void yyerror(const char*);
 %}
-%token INT FLOAT CHAR ID
+%union{
+    node treeNode;
+    int int_value;
+    float float_value;
+    char* string_value;
+}
+%token<int_value> INT 
+%token<float_value>FLOAT 
+%token<char*>CHAR ID
 %token TYPE STRUCT IF WHILE RETURN SEMI COMMA
-
+%type <treeNode> Args Exp Dec DecList Def DefList Stmt StmtList CompSt ParamDec VarList FunDec VarDec StructSpecifier Specifier ExtDecList ExtDef ExtDefList Program
 %nonassoc LOWER_ELSE
 %nonassoc ELSE
 
