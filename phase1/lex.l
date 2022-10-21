@@ -18,13 +18,13 @@ digit [0-9]
 "." { return DOT; }
 ";" { return SEMI; }
 "," { return COMMA; }
-"=" { return ASSIGN; }
-"<" { return LT; }
 "<=" { return LE; }
-">" { return GT; }
+"<" { return LT; }
 ">=" { return GE; }
+">" { return GT; }
 "!=" { return NE; }
 "==" { return EQ; }
+"=" { return ASSIGN; }
 "+" { return PLUS; }
 "-" { return MINUS; }
 "*" { return MUL; }
