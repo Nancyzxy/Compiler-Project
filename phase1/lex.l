@@ -49,7 +49,10 @@ digit [0-9]
 	}
 	else if(strlen(yytext) > 3 && yytext[0] == '0' && (yytext[1] == 'x' || yytext[1] == 'X')&& yytext[2] == '0'){
 		printf("%s\n", "Invalid int");		
-	} yylval.int_value = atoi(yytext);else return INT;}
+	}
+	else{
+	    yylval.int_value = atoi(yytext); return INT;
+	}}
 
 {letter_}({letter_}|{digit})* {yylval.string_value = yytext;return ID;} 
 
