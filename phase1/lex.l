@@ -19,13 +19,13 @@ digit [0-9]
 "." { return DOT; }
 ";" { return SEMI; }
 "," { return COMMA; }
-"=" { return ASSIGN; }
-"<" { return LT; }
 "<=" { return LE; }
-">" { return GT; }
+"<" { return LT; }
 ">=" { return GE; }
+">" { return GT; }
 "!=" { return NE; }
 "==" { return EQ; }
+"=" { return ASSIGN; }
 "+" { return PLUS; }
 "-" { return MINUS; }
 "*" { return MUL; }
@@ -40,18 +40,20 @@ digit [0-9]
 "{" { return LC; }
 "}" { return RC; }
 
-{digit}{digit}*"."{digit}{digit}* {yylval.float_value =  atof(yytext); return FLOAT;}
+{digit}{digit}*"\."{digit}{digit}* {yylval.float_value =  atof(yytext); return FLOAT;}
 
-{digit}*|("0x"|"0X")((digit)|("a"|"b"|"c"|"d"|"e"|"f"))* {
-	if(strlen(yytext) != 1 && yytext[0] == '0' && (yytext[1] != 'x' || yytext[1] != 'X')){
+{digit}*|("0x"|"0X")({digit}|"a"|"b"|"c"|"d"|"e"|"f")({digit}|"a"|"b"|"c"|"d"|"e"|"f")* {
+	if(strlen(yytext) != 1 && yytext[0] == '0' && yytext[1] != 'x' && yytext[1] != 'X'){
 		printf("%s\n","Invalid Int");
 	}
 	else if(strlen(yytext) > 3 && yytext[0] == '0' && (yytext[1] == 'x' || yytext[1] == 'X')&& yytext[2] == '0'){
 		printf("%s\n", "Invalid int");		
-	} yylval.int_value = atoi(yytext);return INT;}
+	} yylval.int_value = atoi(yytext);else return INT;}
 
 {letter_}({letter_}|{digit})* {yylval.string_value = yytext;return ID;} 
 
 \'{letter}\' {yylval.string_value = yytext;return CHAR;}
-"\n"|"\t"|"\r" {}
+\n {lines++;}
+[\t\r ]+ {}
+<<EOF>> {yyterminate();}
 %%
