@@ -3,6 +3,7 @@
 	#include "stdlib.h"
     #include <string.h>
     #include "syntax.tab.h"
+    int lines = 0;
 %}
 
 letter [a-zA-Z]
