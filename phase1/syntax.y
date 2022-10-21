@@ -30,113 +30,119 @@
 %left LP RP LB RB LC RC DOT    
 %%
 
-Program : ExtDefList;
+Program : ExtDefList { 
+    struct node n;
+    $$ = n;
+    };
 
-ExtDefList: ExtDefList ExtDef
-          | 
+ExtDefList: ExtDefList ExtDef {struct node n; $$ = n;}
+          | {struct node n; $$ = n;}
           ;
 
-ExtDef:  Specifier ExtDecList SEMI
-      | Specifier SEMI
-      | Specifier FunDec CompSt
+ExtDef:  Specifier ExtDecList SEMI {struct node n; $$ = n;}
+      | Specifier SEMI {struct node n; $$ = n;}
+      | Specifier FunDec CompSt {struct node n; $$ = n;}
       ;
 
-ExtDecList: VarDec
-          | VarDec COMMA ExtDecList
+ExtDecList: VarDec {struct node n; $$ = n;}
+          | VarDec COMMA ExtDecList {struct node n; $$ = n;}
           ;
 
 /* specifier */
-Specifier: TYPE
-         | StructSpecifier
+Specifier: TYPE {struct node n; $$ = n;}
+         | StructSpecifier {struct node n; $$ = n;}
          ;
 
-StructSpecifier: STRUCT ID LC DefList RC
-               | STRUCT ID
+StructSpecifier: STRUCT ID LC DefList RC {struct node n; $$ = n;}
+               | STRUCT ID {struct node n; $$ = n;}
                ;
 
 /* declarator */
-VarDec: ID
-      | VarDec LB INT RB
+VarDec: ID {struct node n; $$ = n;}
+      | VarDec LB INT RB {struct node n; $$ = n;}
       ;
 
-FunDec: ID LP VarList RP
-      | ID LP RP
+FunDec: ID LP VarList RP {struct node n; $$ = n;}
+      | ID LP RP {struct node n; $$ = n;}
       ;
 
-VarList: ParamDec COMMA VarList
-       | ParamDec
+VarList: ParamDec COMMA VarList {struct node n; $$ = n;}
+       | ParamDec {struct node n; $$ = n;}
        ;
 
-ParamDec: Specifier VarDec
+ParamDec: Specifier VarDec {struct node n; $$ = n;}
         ;
 
 
 /* statement */
-CompSt: LC DefList StmtList RC
+CompSt: LC DefList StmtList RC {struct node n; $$ = n;}
       ;
 
-StmtList: Stmt StmtList
-        |  
+StmtList: Stmt StmtList  {struct node n; $$ = n;}
+        |   {struct node n; $$ = n;}
         ;
 
-Stmt: Exp SEMI
-    | CompSt
-    | RETURN Exp SEMI
-    | IF LP Exp RP Stmt %prec LOWER_ELSE
-    | IF LP Exp RP Stmt ELSE Stmt
-    | WHILE LP Exp RP Stmt
+Stmt: Exp SEMI {struct node n; $$ = n;}
+    | CompSt {struct node n; $$ = n;}
+    | RETURN Exp SEMI {struct node n; $$ = n;}
+    | IF LP Exp RP Stmt %prec LOWER_ELSE {struct node n; $$ = n;}
+    | IF LP Exp RP Stmt ELSE Stmt {struct node n; $$ = n;}
+    | WHILE LP Exp RP Stmt {struct node n; $$ = n;}
     ;
 
 /* local definition */
-DefList: Def DefList
-       |    /*empty terminal*/
+DefList: Def DefList {struct node n; $$ = n;}
+       |    /*empty terminal*/  {struct node n; $$ = n;}
        ;
 
-Def: Specifier DecList SEMI
+Def: Specifier DecList SEMI {struct node n; $$ = n;}
    ;
 
-DecList: Dec
-       | Dec COMMA DecList
+DecList: Dec {struct node n; $$ = n;}
+       | Dec COMMA DecList {struct node n; $$ = n;}
        ;
 
-Dec: VarDec
-   | VarDec ASSIGN Exp
+Dec: VarDec {struct node n; $$ = n;}
+   | VarDec ASSIGN Exp {struct node n; $$ = n;}
    ;
 
 /* Expression */
-Exp: Exp ASSIGN Exp
-   | Exp AND Exp
-   | Exp OR Exp
-   | Exp LT Exp
-   | Exp LE Exp
-   | Exp GT Exp
-   | Exp GE Exp
-   | Exp NE Exp
-   | Exp EQ Exp
-   | Exp PLUS Exp
-   | Exp MINUS Exp
-   | Exp MUL Exp
-   | Exp DIV Exp
-   | LP Exp RP
-   | MINUS Exp
-   | NOT Exp
-   | ID LP Args RP
-   | ID LP RP
-   | Exp LB Exp RB
-   | Exp DOT ID
-   | ID
-   | INT
-   | FLOAT
-   | CHAR
+Exp: Exp ASSIGN Exp {struct node n; $$ = n;}
+   | Exp AND Exp {struct node n; $$ = n;}
+   | Exp OR Exp {struct node n; $$ = n;}
+   | Exp LT Exp {struct node n; $$ = n;}
+   | Exp LE Exp {struct node n; $$ = n;}
+   | Exp GT Exp {struct node n; $$ = n;}
+   | Exp GE Exp {struct node n; $$ = n;}
+   | Exp NE Exp {struct node n; $$ = n;}
+   | Exp EQ Exp {struct node n; $$ = n;}
+   | Exp PLUS Exp {struct node n; $$ = n;}
+   | Exp MINUS Exp {struct node n; $$ = n;}
+   | Exp MUL Exp {struct node n; $$ = n;}
+   | Exp DIV Exp {struct node n; $$ = n;}
+   | LP Exp RP {struct node n; $$ = n;}
+   | MINUS Exp {struct node n; $$ = n;}
+   | NOT Exp {struct node n; $$ = n;}
+   | ID LP Args RP {struct node n; $$ = n;}
+   | ID LP RP {struct node n; $$ = n;}
+   | Exp LB Exp RB {struct node n; $$ = n;}
+   | Exp DOT ID {struct node n; $$ = n;}
+   | ID {struct node n; $$ = n;}
+   | INT {struct node n; $$ = n;}
+   | FLOAT {struct node n; $$ = n;}
+   | CHAR {struct node n; $$ = n;}
    ;
 
-Args: Exp COMMA Args
-    | Exp
+Args: Exp COMMA Args {struct node n; $$ = n;}
+    | Exp {struct node n; n.name = "Args" $$ = n;}
     ;
 
 %%
 void yyerror(const char *s) {
     fprintf(stderr, "%s at line %d\n", s, yylineno);
+}
+void inset(node* parent, node* child, ...){
+
 }
 int main(int argc, char **argv) {
     char *file_path;

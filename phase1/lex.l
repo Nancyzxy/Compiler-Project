@@ -59,5 +59,4 @@ digit [0-9]
 \'{letter}\' {yylval.string_value = yytext;return CHAR;}
 "\n" {}
 "\t"|"\r" {}
-<<EOF>> {yyterminate();}
 %%

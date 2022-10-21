@@ -6,5 +6,7 @@ typedef struct node
     char * attribute;
     int lineNo;
     int isNon;
+    struct node* child;
+    struct node* next;
 } node;
 #endif
