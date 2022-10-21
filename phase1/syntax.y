@@ -134,7 +134,7 @@ Exp: Exp ASSIGN Exp {struct node n; $$ = n;}
    ;
 
 Args: Exp COMMA Args {struct node n; $$ = n;}
-    | Exp {struct node n; n.name = "Args" $$ = n;}
+    | Exp {struct node n; n.name = "Args" ; $$ = n;}
     ;
 
 %%
