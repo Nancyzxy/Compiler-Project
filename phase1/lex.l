@@ -1,7 +1,6 @@
 %{
     #include "syntax.tab.h"
     #include "stdlib.h"
-    int count = 0;
 %}
 
 letter [a-zA-Z]
@@ -42,8 +41,5 @@ digit [0-9]
 {digit}* {return (INT);}
 {letter_}({letter_}|{digit})* {return (ID);} 
 \'{letter}\' {return (CHAR);}
-" " {}
 "\n"|"\t"|"\r" {}
-<<EOF>> { return END; }
-. { printf("unkown lemex: %s\n", yytext); }
 %%

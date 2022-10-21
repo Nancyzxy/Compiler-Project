@@ -7,14 +7,12 @@
 %token INT FLOAT CHAR ID
 %token TYPE STRUCT IF ELSE WHILE RETURN DOT SEMI COMMA ASSIGN
 %token LT LE GT GE NE EQ PLUS MINUS MUL DIV AND OR NOT LP RP LB RB LC RC     
-%token END
-
 %%
 
 Program : ExtDefList;
 
 ExtDefList: ExtDefList ExtDef
-          | END
+          | 
           ;
 
 ExtDef:  Specifier ExtDecList SEMI
@@ -57,7 +55,7 @@ CompSt: LC DefList StmtList RC
       ;
 
 StmtList: Stmt StmtList
-        | END
+        |  
         ;
 
 Stmt: Exp SEMI
@@ -70,7 +68,7 @@ Stmt: Exp SEMI
 
 /* local definition */
 DefList: Def DefList
-       | END
+       |    /*empty terminal*/
        ;
 
 Def: Specifier DecList SEMI
