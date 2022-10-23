@@ -29,7 +29,7 @@ Program (0)
                 ID: c
               ASSIGN
               EXP (1)
-                CHAR: 'c'
+                CHAR: 
             SEMI
           StmtList (1)
             Stmt (1)
