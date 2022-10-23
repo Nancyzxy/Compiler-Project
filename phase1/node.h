@@ -5,7 +5,7 @@ typedef struct node
     char * name;
     char * attribute;
     int lineNo;
-    int isNon;
+    int isEmpty;
     struct node* child;
     struct node* next;
 } node;

@@ -3,7 +3,8 @@
 	#include "stdlib.h"
     #include <string.h>
     #include "syntax.tab.h"
-    int lines = 0;
+	#define YY_USER_ACTION \
+		yylloc.first_line = yylineno;
 %}
 
 letter [a-zA-Z]
@@ -11,7 +12,7 @@ letter_ {letter}|_
 digit [0-9]
 
 %%
-"int"|"float"|"char" { return TYPE; }
+"int"|"float"|"char" { yylval.string_value = strdup(yytext); return TYPE; }
 "struct" { return STRUCT; }
 "if" { return IF; }
 "else" { return ELSE; }
@@ -55,9 +56,9 @@ digit [0-9]
 		return INT;}
 		}
 
-{letter_}({letter_}|{digit})* {yylval.string_value = yytext;return ID;} 
+{letter_}({letter_}|{digit})* {yylval.string_value = strdup(yytext);return ID;} 
 
-\'{letter}\' {yylval.string_value = yytext;return CHAR;}
+\'{letter}\' {yylval.string_value = strdup(yytext);return CHAR;}
 "\n" {}
 "\t"|"\r" {}
 %%

@@ -1,149 +1,232 @@
 %{
     #include "lex.yy.c"
     #include "node.h"
+    #include <stdarg.h>
     #define EXIT_OK 0
     #define EXIT_FAIL 1
+    node* insert(char* parent,int count,...);
     void yyerror(const char*);
+    node* alloNodeI(int a,char * Name);
+    node* alloNodeF(float a,char * Name);
+    node* alloNodeC(char* a,char * Name);
+    void printTree(node* root,int blank);
 %}
 %union{
-    node treeNode;
+    node* treeNode;
     int int_value;
     float float_value;
     char* string_value;
 }
 %token<int_value> INT 
 %token<float_value>FLOAT 
-%token<char*>CHAR ID
-%token TYPE STRUCT IF WHILE RETURN SEMI COMMA
+%token<string_value>CHAR ID TYPE
+%token<treeNode> STRUCT IF WHILE RETURN SEMI COMMA
 %type <treeNode> Args Exp Dec DecList Def DefList Stmt StmtList CompSt ParamDec VarList FunDec VarDec StructSpecifier Specifier ExtDecList ExtDef ExtDefList Program
-%nonassoc LOWER_ELSE
-%nonassoc ELSE
+%nonassoc<treeNode> LOWER_ELSE
+%nonassoc<treeNode> ELSE
 
-%right ASSIGN
-%left OR
-%left AND
-%left NE EQ
-%left LT LE GT GE
-%left PLUS MINUS
-%left MUL DIV
-%right NOT
-%left LP RP LB RB LC RC DOT    
+%right<treeNode> ASSIGN
+%left<treeNode> OR
+%left<treeNode> AND
+%left<treeNode> NE EQ
+%left<treeNode> LT LE GT GE
+%left<treeNode> PLUS MINUS
+%left<treeNode> MUL DIV
+%right<treeNode> NOT
+%left<treeNode> LP RP LB RB LC RC DOT
 %%
 
-Program : ExtDefList { 
-    struct node n;
-    $$ = n;
+Program : ExtDefList { @$ = @1;
+    $$ = insert("Program",1,$1);
+    freopen("out.txt","w",stdout);
+    printTree($$,0);
     };
 
-ExtDefList: ExtDefList ExtDef {struct node n; $$ = n;}
-          | {struct node n; $$ = n;}
+ExtDefList: ExtDefList ExtDef { $$ = insert("ExtDefList",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;}
+          | {$$ = insert("ExtDefList",0);}
           ;
 
-ExtDef:  Specifier ExtDecList SEMI {struct node n; $$ = n;}
-      | Specifier SEMI {struct node n; $$ = n;}
-      | Specifier FunDec CompSt {struct node n; $$ = n;}
+ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;}
+      | Specifier SEMI {$$ = insert("ExtDef",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;}
+      | Specifier FunDec CompSt {$$ = insert("ExtDef",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;}
       ;
 
-ExtDecList: VarDec {struct node n; $$ = n;}
-          | VarDec COMMA ExtDecList {struct node n; $$ = n;}
+ExtDecList: VarDec {$$ = insert("ExtDecList",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
+          | VarDec COMMA ExtDecList {$$ = insert("ExtDecList",3,$1,alloNodeC(",","COMMA"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
           ;
 
 /* specifier */
-Specifier: TYPE {struct node n; $$ = n;}
-         | StructSpecifier {struct node n; $$ = n;}
+Specifier: TYPE {$$ = insert("Specifier",1,alloNodeC($1,"TYPE"));@$ = @1;$$->lineNo=(@1).first_line;}
+         | StructSpecifier {$$ = insert("Specifier",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
          ;
 
-StructSpecifier: STRUCT ID LC DefList RC {struct node n; $$ = n;}
-               | STRUCT ID {struct node n; $$ = n;}
+StructSpecifier: STRUCT ID LC DefList RC {
+                $$ = insert("StructSpecifier",5,
+                alloNodeC("struct","STRUCT"),
+                alloNodeC($2,"ID"),
+                alloNodeC("{","LC"),
+                $4,
+                alloNodeC("}","RC")
+                );
+                @$ = @1;$$->lineNo=(@1).first_line;}
+               | STRUCT ID {$$ = insert("StructSpecifier",2,alloNodeC("struct","STRUCT"),alloNodeC($2,"ID"));@$ = @1;$$->lineNo=(@1).first_line;}
                ;
 
 /* declarator */
-VarDec: ID {struct node n; $$ = n;}
-      | VarDec LB INT RB {struct node n; $$ = n;}
+VarDec: ID {$$ = insert("VarDec",1,alloNodeC($1,"ID"));@$ = @1;$$->lineNo=(@1).first_line;}
+      | VarDec LB INT RB {$$ = insert("VarDec",4,$1,alloNodeC("[","LB"),alloNodeI($3,"INT"),alloNodeC("]","RB"));@$ = @1;$$->lineNo=(@1).first_line;}
       ;
 
-FunDec: ID LP VarList RP {struct node n; $$ = n;}
-      | ID LP RP {struct node n; $$ = n;}
+FunDec: ID LP VarList RP {$$ = insert("FunDec",4,alloNodeC($1,"ID"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
+      | ID LP RP {$$ = insert("FunDec",3,alloNodeC($1,"ID"),alloNodeC("(","LP"),alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
       ;
 
-VarList: ParamDec COMMA VarList {struct node n; $$ = n;}
-       | ParamDec {struct node n; $$ = n;}
+VarList: ParamDec COMMA VarList {$$ = insert("VarList",3,$1,alloNodeC(",","COMMA"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+       | ParamDec {$$ = insert("VarList",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
        ;
 
-ParamDec: Specifier VarDec {struct node n; $$ = n;}
+ParamDec: Specifier VarDec {$$ = insert("ParamDec",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;}
         ;
 
 
 /* statement */
-CompSt: LC DefList StmtList RC {struct node n; $$ = n;}
+CompSt: LC DefList StmtList RC {$$ = insert("Def",4,alloNodeC("{","LC"),$2,$3,alloNodeC("}","RC"));@$ = @1;$$->lineNo=(@1).first_line;}
       ;
 
-StmtList: Stmt StmtList  {struct node n; $$ = n;}
-        |   {struct node n; $$ = n;}
+StmtList: Stmt StmtList  {$$ = insert("StmtList",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;}
+        |   {$$ = insert("StmtList",0);}
         ;
 
-Stmt: Exp SEMI {struct node n; $$ = n;}
-    | CompSt {struct node n; $$ = n;}
-    | RETURN Exp SEMI {struct node n; $$ = n;}
-    | IF LP Exp RP Stmt %prec LOWER_ELSE {struct node n; $$ = n;}
-    | IF LP Exp RP Stmt ELSE Stmt {struct node n; $$ = n;}
-    | WHILE LP Exp RP Stmt {struct node n; $$ = n;}
+Stmt: Exp SEMI {$$ = insert("Stmt",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;}
+    | CompSt {$$ = insert("Stmt",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
+    | RETURN Exp SEMI {$$ = insert("Stmt",3,alloNodeC("return","RETURN"),$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;}
+    | IF LP Exp RP Stmt %prec LOWER_ELSE {$$ = insert("Stmt",5,alloNodeC("if","IF"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"),$5);@$ = @1;$$->lineNo=(@1).first_line;}
+    | IF LP Exp RP Stmt ELSE Stmt {$$ = insert("Stmt",7,alloNodeC("if","IF"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"),$5,alloNodeC("else","ELSE"),$7);@$ = @1;$$->lineNo=(@1).first_line;}
+    | WHILE LP Exp RP Stmt {$$ = insert("Stmt",5,$1,alloNodeC("(","LP"),$3,alloNodeC(")","RP"),$5);@$ = @1;$$->lineNo=(@1).first_line;}
     ;
 
 /* local definition */
-DefList: Def DefList {struct node n; $$ = n;}
-       |    /*empty terminal*/  {struct node n; $$ = n;}
+DefList: Def DefList {$$ = insert("DefList",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;}
+       |    /*empty terminal*/  {$$ = insert("DefList",0);}
        ;
 
-Def: Specifier DecList SEMI {struct node n; $$ = n;}
+Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;}
    ;
 
-DecList: Dec {struct node n; $$ = n;}
-       | Dec COMMA DecList {struct node n; $$ = n;}
+DecList: Dec {$$ = insert("DecList",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
+       | Dec COMMA DecList {$$ = insert("DecList",3,$1,alloNodeC(",","COMMA"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
        ;
 
-Dec: VarDec {struct node n; $$ = n;}
-   | VarDec ASSIGN Exp {struct node n; $$ = n;}
+Dec: VarDec {$$=insert("Dec",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
+   | VarDec ASSIGN Exp {$$=insert("Dec",3,$1,alloNodeC("=","ASSIGN"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
    ;
 
 /* Expression */
-Exp: Exp ASSIGN Exp {struct node n; $$ = n;}
-   | Exp AND Exp {struct node n; $$ = n;}
-   | Exp OR Exp {struct node n; $$ = n;}
-   | Exp LT Exp {struct node n; $$ = n;}
-   | Exp LE Exp {struct node n; $$ = n;}
-   | Exp GT Exp {struct node n; $$ = n;}
-   | Exp GE Exp {struct node n; $$ = n;}
-   | Exp NE Exp {struct node n; $$ = n;}
-   | Exp EQ Exp {struct node n; $$ = n;}
-   | Exp PLUS Exp {struct node n; $$ = n;}
-   | Exp MINUS Exp {struct node n; $$ = n;}
-   | Exp MUL Exp {struct node n; $$ = n;}
-   | Exp DIV Exp {struct node n; $$ = n;}
-   | LP Exp RP {struct node n; $$ = n;}
-   | MINUS Exp {struct node n; $$ = n;}
-   | NOT Exp {struct node n; $$ = n;}
-   | ID LP Args RP {struct node n; $$ = n;}
-   | ID LP RP {struct node n; $$ = n;}
-   | Exp LB Exp RB {struct node n; $$ = n;}
-   | Exp DOT ID {struct node n; $$ = n;}
-   | ID {struct node n; $$ = n;}
-   | INT {struct node n; $$ = n;}
-   | FLOAT {struct node n; $$ = n;}
-   | CHAR {struct node n; $$ = n;}
+Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("EXP",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp AND Exp {$$=insert("EXP",3,$1,alloNodeC("&&","AND"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp OR Exp {$$=insert("EXP",3,$1,alloNodeC("||","OR"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp LT Exp {$$=insert("EXP",3,$1,alloNodeC("<","LT"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp LE Exp {$$=insert("EXP",3,$1,alloNodeC("<=","LE"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp GT Exp {$$=insert("EXP",3,$1,alloNodeC(">","GT"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp GE Exp {$$=insert("EXP",3,$1,alloNodeC(">=","GE"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp NE Exp {$$=insert("EXP",3,$1,alloNodeC("!=","NE"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp EQ Exp {$$=insert("EXP",3,$1,alloNodeC("==","EQ"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp PLUS Exp {$$=insert("EXP",3,$1,alloNodeC("+","PLUS"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp MINUS Exp {$$=insert("EXP",3,$1,alloNodeC("-","MINUS"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp MUL Exp {$$=insert("EXP",3,$1,alloNodeC("*","MUL"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp DIV Exp {$$=insert("EXP",3,$1,alloNodeC("/","DIV"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | LP Exp RP {$$=insert("EXP",3,alloNodeC("(","LP"),$2,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | MINUS Exp {$$=insert("EXP",2,alloNodeC("-","MINUS"),$2);@$ = @1;$$->lineNo=(@1).first_line;}
+   | NOT Exp {$$=insert("EXP",2,alloNodeC("!","NOT"),$2);@$ = @1;$$->lineNo=(@1).first_line;}
+   | ID LP Args RP {$$=insert("EXP",4,alloNodeC($1,"ID"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | ID LP RP {$$=insert("EXP",3,alloNodeC($1,"ID"),alloNodeC("(","LP"),alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp LB Exp RB {$$=insert("EXP",4,$1,alloNodeC("[","LB"),$3,alloNodeC("]","RB"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp DOT ID {$$=insert("EXP",3,$1,alloNodeC(".","DOT"),alloNodeC($3,"ID"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | ID {$$=insert("EXP",1,alloNodeC($1,"ID"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | INT {$$=insert("EXP",1,alloNodeI($1,"INT"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | FLOAT {$$=insert("EXP",1,alloNodeF($1,"FLOAT"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | CHAR {$$=insert("EXP",1,alloNodeC($1,"CHAR"));@$ = @1;$$->lineNo=(@1).first_line;}
    ;
 
-Args: Exp COMMA Args {struct node n; $$ = n;}
-    | Exp {struct node n; n.name = "Args" ; $$ = n;}
+Args: Exp COMMA Args {$2= alloNodeC(",","COMMA"); $$ = insert("Args",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;}
+    | Exp {$$ = insert("Args",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
     ;
 
 %%
 void yyerror(const char *s) {
     fprintf(stderr, "%s at line %d\n", s, yylineno);
 }
-void inset(node* parent, node* child, ...){
 
+void printTree(node* root, int blank){
+    if (root->child==NULL)
+    {   
+        if(root->attribute){
+            printf("%*s%s: %s\n",blank,"",root->name,root->attribute);
+        }else{
+            printf("%*s%s\n",blank,"",root->name);
+        }
+        return;
+    }else{
+        printf("%*s%s (%d)\n",blank,"",root->name,root->lineNo);
+        node *p= root->child;
+        while(p!=NULL){
+            if(!p->isEmpty){
+               printTree(p,blank+2);
+            }
+            p=p->next;
+        }
+    }
 }
+
+node* alloNodeI(int a,char * Name){
+    node *p = malloc(sizeof(node));
+    p->name = Name;
+    p->child = NULL;
+    p->isEmpty = 0;
+    sprintf(p->attribute,"%d",a);
+    return p;
+}
+node* alloNodeF(float a,char * Name){
+    node *p = malloc(sizeof(node));
+    p->name = Name;
+    p->child = NULL;
+    p->isEmpty = 0;
+    sprintf(p->attribute,"%f",a);
+    return p;
+}
+node* alloNodeC(char* a,char * Name){
+    node *p = malloc(sizeof(node));
+    p->name = Name;
+    p->child = NULL;
+    p->isEmpty = 0;
+    if(Name=="INT"||Name=="FLOAT"||Name=="CHAR"||Name=="ID"||Name=="TYPE")
+        p->attribute=a;
+    return p;
+}
+
+node* insert(char * parent,int count, ...){
+    node *p = malloc(sizeof(node));
+    p->name = parent;
+    if (count==0){
+        p->isEmpty = 1;
+        return p;
+    }
+    va_list args;
+    va_start(args, count);
+
+    node * start = va_arg(args,node*);
+    node * prev = start;
+    for(int i=0;i<count-1;i++) {
+        node * n=va_arg(args, node*);
+        prev->next=n;
+        prev = n;
+    }
+    prev->next==NULL;
+    p->child = start;
+    va_end(args);
+    return p;
+}
+
 int main(int argc, char **argv) {
     char *file_path;
     if(argc < 2){
