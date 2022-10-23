@@ -44,7 +44,7 @@ digit [0-9]
 
 {digit}{digit}*"\."{digit}{digit}* {yylval.float_value =  atof(yytext); return FLOAT;}
 
-{digit}*|("0x"|"0X")({digit}|"a"|"b"|"c"|"d"|"e"|"f")({digit}|"a"|"b"|"c"|"d"|"e"|"f")* {
+{digit}*|("0x"|"0X")({digit}|"a"|"b"|"c"|"d"|"e"|"f"|"A"|"B"|"C"|"D"|"E"|"F")({digit}|"A"|"B"|"C"|"D"|"E"|"F")* {
 	if(strlen(yytext) != 1 && yytext[0] == '0' && yytext[1] != 'x' && yytext[1] != 'X'){
 		printf("%s\n","Invalid Int");
 	}
@@ -58,7 +58,13 @@ digit [0-9]
 
 {letter_}({letter_}|{digit})* {yylval.string_value = strdup(yytext);return ID;} 
 
-\'{letter}\' {yylval.string_value = strdup(yytext);return CHAR;}
+
 "\n" {}
 "\t"|"\r" {}
+\'.\' {if(yytext[1] >= 32 && yytext[1] <= 126) {
+	yylval.string_value = yytext;
+	return CHAR;
+	}
+	else printf("%s\n", "Invalid Char");
+	}
 %%
