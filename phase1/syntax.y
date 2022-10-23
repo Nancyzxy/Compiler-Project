@@ -2,6 +2,8 @@
     #include "lex.yy.c"
     #include "node.h"
     #include <stdarg.h>
+    #include <stdio.h>
+    #include <string.h>
     #define EXIT_OK 0
     #define EXIT_FAIL 1
     node* insert(char* parent,int count,...);
@@ -10,7 +12,9 @@
     node* alloNodeF(float a,char * Name);
     node* alloNodeC(char* a,char * Name);
     void printTree(node* root,int blank);
+    void freeNode(node* root);
 %}
+
 %union{
     node* treeNode;
     int int_value;
@@ -36,10 +40,12 @@
 %left<treeNode> LP RP LB RB LC RC DOT
 %%
 
-Program : ExtDefList { @$ = @1;
+Program : ExtDefList {
     $$ = insert("Program",1,$1);
+    @$ = @1;$$->lineNo=(@1).first_line;
     freopen("out.txt","w",stdout);
     printTree($$,0);
+    freeNode($$);
     };
 
 ExtDefList: ExtDefList ExtDef { $$ = insert("ExtDefList",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;}
@@ -90,7 +96,7 @@ ParamDec: Specifier VarDec {$$ = insert("ParamDec",2,$1,$2);@$ = @1;$$->lineNo=(
 
 
 /* statement */
-CompSt: LC DefList StmtList RC {$$ = insert("Def",4,alloNodeC("{","LC"),$2,$3,alloNodeC("}","RC"));@$ = @1;$$->lineNo=(@1).first_line;}
+CompSt: LC DefList StmtList RC {$$ = insert("CompSt",4,alloNodeC("{","LC"),$2,$3,alloNodeC("}","RC"));@$ = @1;$$->lineNo=(@1).first_line;}
       ;
 
 StmtList: Stmt StmtList  {$$ = insert("StmtList",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;}
@@ -102,7 +108,7 @@ Stmt: Exp SEMI {$$ = insert("Stmt",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineN
     | RETURN Exp SEMI {$$ = insert("Stmt",3,alloNodeC("return","RETURN"),$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;}
     | IF LP Exp RP Stmt %prec LOWER_ELSE {$$ = insert("Stmt",5,alloNodeC("if","IF"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"),$5);@$ = @1;$$->lineNo=(@1).first_line;}
     | IF LP Exp RP Stmt ELSE Stmt {$$ = insert("Stmt",7,alloNodeC("if","IF"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"),$5,alloNodeC("else","ELSE"),$7);@$ = @1;$$->lineNo=(@1).first_line;}
-    | WHILE LP Exp RP Stmt {$$ = insert("Stmt",5,$1,alloNodeC("(","LP"),$3,alloNodeC(")","RP"),$5);@$ = @1;$$->lineNo=(@1).first_line;}
+    | WHILE LP Exp RP Stmt {$$ = insert("Stmt",5,alloNodeC("while","WHILE"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"),$5);@$ = @1;$$->lineNo=(@1).first_line;}
     ;
 
 /* local definition */
@@ -122,30 +128,30 @@ Dec: VarDec {$$=insert("Dec",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
    ;
 
 /* Expression */
-Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("EXP",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;}
-   | Exp AND Exp {$$=insert("EXP",3,$1,alloNodeC("&&","AND"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
-   | Exp OR Exp {$$=insert("EXP",3,$1,alloNodeC("||","OR"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
-   | Exp LT Exp {$$=insert("EXP",3,$1,alloNodeC("<","LT"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
-   | Exp LE Exp {$$=insert("EXP",3,$1,alloNodeC("<=","LE"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
-   | Exp GT Exp {$$=insert("EXP",3,$1,alloNodeC(">","GT"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
-   | Exp GE Exp {$$=insert("EXP",3,$1,alloNodeC(">=","GE"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
-   | Exp NE Exp {$$=insert("EXP",3,$1,alloNodeC("!=","NE"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
-   | Exp EQ Exp {$$=insert("EXP",3,$1,alloNodeC("==","EQ"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
-   | Exp PLUS Exp {$$=insert("EXP",3,$1,alloNodeC("+","PLUS"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
-   | Exp MINUS Exp {$$=insert("EXP",3,$1,alloNodeC("-","MINUS"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
-   | Exp MUL Exp {$$=insert("EXP",3,$1,alloNodeC("*","MUL"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
-   | Exp DIV Exp {$$=insert("EXP",3,$1,alloNodeC("/","DIV"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
-   | LP Exp RP {$$=insert("EXP",3,alloNodeC("(","LP"),$2,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
-   | MINUS Exp {$$=insert("EXP",2,alloNodeC("-","MINUS"),$2);@$ = @1;$$->lineNo=(@1).first_line;}
-   | NOT Exp {$$=insert("EXP",2,alloNodeC("!","NOT"),$2);@$ = @1;$$->lineNo=(@1).first_line;}
-   | ID LP Args RP {$$=insert("EXP",4,alloNodeC($1,"ID"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
-   | ID LP RP {$$=insert("EXP",3,alloNodeC($1,"ID"),alloNodeC("(","LP"),alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
-   | Exp LB Exp RB {$$=insert("EXP",4,$1,alloNodeC("[","LB"),$3,alloNodeC("]","RB"));@$ = @1;$$->lineNo=(@1).first_line;}
-   | Exp DOT ID {$$=insert("EXP",3,$1,alloNodeC(".","DOT"),alloNodeC($3,"ID"));@$ = @1;$$->lineNo=(@1).first_line;}
-   | ID {$$=insert("EXP",1,alloNodeC($1,"ID"));@$ = @1;$$->lineNo=(@1).first_line;}
-   | INT {$$=insert("EXP",1,alloNodeI($1,"INT"));@$ = @1;$$->lineNo=(@1).first_line;}
-   | FLOAT {$$=insert("EXP",1,alloNodeF($1,"FLOAT"));@$ = @1;$$->lineNo=(@1).first_line;}
-   | CHAR {$$=insert("EXP",1,alloNodeC($1,"CHAR"));@$ = @1;$$->lineNo=(@1).first_line;}
+Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp AND Exp {$$=insert("Exp",3,$1,alloNodeC("&&","AND"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp OR Exp {$$=insert("Exp",3,$1,alloNodeC("||","OR"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp LT Exp {$$=insert("Exp",3,$1,alloNodeC("<","LT"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp LE Exp {$$=insert("Exp",3,$1,alloNodeC("<=","LE"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp GT Exp {$$=insert("Exp",3,$1,alloNodeC(">","GT"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp GE Exp {$$=insert("Exp",3,$1,alloNodeC(">=","GE"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp NE Exp {$$=insert("Exp",3,$1,alloNodeC("!=","NE"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp EQ Exp {$$=insert("Exp",3,$1,alloNodeC("==","EQ"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp PLUS Exp {$$=insert("Exp",3,$1,alloNodeC("+","PLUS"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp MINUS Exp {$$=insert("Exp",3,$1,alloNodeC("-","MINUS"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp MUL Exp {$$=insert("Exp",3,$1,alloNodeC("*","MUL"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp DIV Exp {$$=insert("Exp",3,$1,alloNodeC("/","DIV"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
+   | LP Exp RP {$$=insert("Exp",3,alloNodeC("(","LP"),$2,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | MINUS Exp {$$=insert("Exp",2,alloNodeC("-","MINUS"),$2);@$ = @1;$$->lineNo=(@1).first_line;}
+   | NOT Exp {$$=insert("Exp",2,alloNodeC("!","NOT"),$2);@$ = @1;$$->lineNo=(@1).first_line;}
+   | ID LP Args RP {$$=insert("Exp",4,alloNodeC($1,"ID"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | ID LP RP {$$=insert("Exp",3,alloNodeC($1,"ID"),alloNodeC("(","LP"),alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp LB Exp RB {$$=insert("Exp",4,$1,alloNodeC("[","LB"),$3,alloNodeC("]","RB"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | Exp DOT ID {$$=insert("Exp",3,$1,alloNodeC(".","DOT"),alloNodeC($3,"ID"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | ID {$$=insert("Exp",1,alloNodeC($1,"ID"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | INT {$$=insert("Exp",1,alloNodeI($1,"INT"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | FLOAT {$$=insert("Exp",1,alloNodeF($1,"FLOAT"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | CHAR {$$=insert("Exp",1,alloNodeC($1,"CHAR"));@$ = @1;$$->lineNo=(@1).first_line;}
    ;
 
 Args: Exp COMMA Args {$2= alloNodeC(",","COMMA"); $$ = insert("Args",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;}
@@ -155,6 +161,22 @@ Args: Exp COMMA Args {$2= alloNodeC(",","COMMA"); $$ = insert("Args",3,$1,$2,$3)
 %%
 void yyerror(const char *s) {
     fprintf(stderr, "%s at line %d\n", s, yylineno);
+}
+
+void freeNode(node* root){
+    /*
+    if (root->child==NULL)
+    {   
+        free(root);
+        return;
+    }else{
+        node *p1= root->child;
+        while(p1!=NULL){
+            node* t=p1->next;
+            freeNode(p1);
+            node* p1=t;
+        }
+    }*/
 }
 
 void printTree(node* root, int blank){
@@ -183,6 +205,7 @@ node* alloNodeI(int a,char * Name){
     p->name = Name;
     p->child = NULL;
     p->isEmpty = 0;
+    p->attribute = malloc(sizeof(char)*10);
     sprintf(p->attribute,"%d",a);
     return p;
 }
@@ -191,6 +214,7 @@ node* alloNodeF(float a,char * Name){
     p->name = Name;
     p->child = NULL;
     p->isEmpty = 0;
+    p->attribute = malloc(sizeof(char)*10);
     sprintf(p->attribute,"%f",a);
     return p;
 }

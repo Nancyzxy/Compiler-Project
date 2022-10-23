@@ -1,66 +1,83 @@
-Program (0)
+Program (1)
   ExtDefList (1)
-    ExtDef (1)
-      Specifier (1)
-        TYPE: int
-      FunDec (1)
-        ID: test_1_r01
-        LP
-        VarList (1)
-          ParamDec (1)
-            Specifier (1)
-              TYPE: int
+    ExtDefList (1)
+      ExtDefList (1)
+        ExtDef (1)
+          Specifier (1)
+            TYPE: int
+          ExtDecList (1)
             VarDec (1)
-              ID: a
-          COMMA
-          VarList (1)
-            ParamDec (1)
-              Specifier (1)
-                TYPE: int
-              VarDec (1)
-                ID: b
+              ID: global
+          SEMI
+      ExtDef (2)
+        Specifier (2)
+          StructSpecifier (2)
+            STRUCT
+            ID: my_struct
+            LC
+            DefList (4)
+              Def (4)
+                Specifier (4)
+                  TYPE: int
+                DecList (4)
+                  Dec (4)
+                    VarDec (4)
+                      ID: code
+                SEMI
+              DefList (5)
+                Def (5)
+                  Specifier (5)
+                    TYPE: char
+                  DecList (5)
+                    Dec (5)
+                      VarDec (5)
+                        ID: data
+                  SEMI
+            RC
+        SEMI
+    ExtDef (7)
+      Specifier (7)
+        TYPE: int
+      FunDec (7)
+        ID: test_1_r02
+        LP
         RP
-      Def (1)
+      CompSt (8)
         LC
-        StmtList (1)
-          Stmt (1)
-            EXP (1)
-              EXP (1)
-                ID: c
-              ASSIGN
-              EXP (1)
-                CHAR: 
+        DefList (9)
+          Def (9)
+            Specifier (9)
+              StructSpecifier (9)
+                STRUCT
+                ID: my_struct
+            DecList (9)
+              Dec (9)
+                VarDec (9)
+                  ID: obj
             SEMI
-          StmtList (1)
-            Stmt (1)
-              IF
-              LP
-              EXP (1)
-                EXP (1)
-                  ID: a
-                GT
-                EXP (1)
-                  ID: b
-              RP
-              Stmt (1)
-                Def (1)
-                  LC
-                  StmtList (1)
-                    Stmt (1)
-                      RETURN
-                      EXP (1)
-                        ID: a
-                      SEMI
-                  RC
-              ELSE
-              Stmt (1)
-                Def (1)
-                  LC
-                  StmtList (1)
-                    Stmt (1)
-                      RETURN
-                      EXP (1)
-                        ID: b
-                      SEMI
-                  RC
+        StmtList (10)
+          Stmt (10)
+            Exp (10)
+              Exp (10)
+                Exp (10)
+                  ID: obj
+                DOT
+                ID: code
+              ASSIGN
+              Exp (10)
+                ID: global
+            SEMI
+          StmtList (11)
+            Stmt (11)
+              Exp (11)
+                Exp (11)
+                  ID: global
+                ASSIGN
+                Exp (11)
+                  Exp (11)
+                    ID: global
+                  PLUS
+                  Exp (11)
+                    INT: 1
+              SEMI
         RC

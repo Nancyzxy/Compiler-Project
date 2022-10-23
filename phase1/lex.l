@@ -3,10 +3,10 @@
 	#include "stdlib.h"
     #include <string.h>
     #include "syntax.tab.h"
-	#define YY_USER_ACTION \
-		yylloc.first_line = yylineno;
+	#define YY_USER_ACTION  yylloc.first_line = yylineno;
 %}
 
+%option yylineno
 letter [a-zA-Z]
 letter_ {letter}|_
 digit [0-9]
@@ -62,7 +62,7 @@ digit [0-9]
 "\n" {}
 "\t"|"\r" {}
 \'.\' {if(yytext[1] >= 32 && yytext[1] <= 126) {
-	yylval.string_value = yytext;
+	yylval.string_value = strdup(yytext);
 	return CHAR;
 	}
 	else printf("%s\n", "Invalid Char");
