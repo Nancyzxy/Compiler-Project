@@ -4,6 +4,7 @@
     #include <string.h>
     #include "syntax.tab.h"
 	#define YY_USER_ACTION  yylloc.first_line = yylineno;
+	int hexToDec(char * hex);
 %}
 
 %option yylineno
@@ -42,7 +43,7 @@ digit [0-9]
 "{" { return LC; }
 "}" { return RC; }
 
-{digit}{digit}*"\."{digit}{digit}* {yylval.float_value =  atof(yytext); return FLOAT;}
+{digit}{digit}*"\."{digit}{digit}* {yylval.string_value = strdup(yytext); return FLOAT;}
 
 {digit}*|("0x"|"0X")({digit}|"a"|"b"|"c"|"d"|"e"|"f"|"A"|"B"|"C"|"D"|"E"|"F")({digit}|"A"|"B"|"C"|"D"|"E"|"F")* {
 	if(strlen(yytext) != 1 && yytext[0] == '0' && yytext[1] != 'x' && yytext[1] != 'X'){
@@ -52,9 +53,10 @@ digit [0-9]
 		printf("%s\n", "Invalid int");		
 	} 
 	else {
-		yylval.int_value = atoi(yytext);
-		return INT;}
-		}
+		yylval.int_value = hexToDec(yytext);
+		return INT;
+	}
+}
 
 {letter_}({letter_}|{digit})* {yylval.string_value = strdup(yytext);return ID;} 
 
@@ -68,3 +70,12 @@ digit [0-9]
 	else printf("%s\n", "Invalid Char");
 	}
 %%
+
+int hexToDec(char * hex){
+	char * p = hex+1;
+	if(p&&(*p=='x'||*p=='X')){
+		int sum= strtol(hex, NULL, 16);
+		return sum;
+	}
+	else return atoi(hex);
+}

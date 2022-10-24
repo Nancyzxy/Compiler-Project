@@ -22,7 +22,7 @@
     char* string_value;
 }
 %token<int_value> INT 
-%token<float_value>FLOAT 
+%token<string_value>FLOAT 
 %token<string_value>CHAR ID TYPE
 %token<treeNode> STRUCT IF WHILE RETURN SEMI COMMA
 %type <treeNode> Args Exp Dec DecList Def DefList Stmt StmtList CompSt ParamDec VarList FunDec VarDec StructSpecifier Specifier ExtDecList ExtDef ExtDefList Program
@@ -48,7 +48,7 @@ Program : ExtDefList {
     freeNode($$);
     };
 
-ExtDefList: ExtDefList ExtDef { $$ = insert("ExtDefList",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;}
+ExtDefList: ExtDef ExtDefList { $$ = insert("ExtDefList",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;}
           | {$$ = insert("ExtDefList",0);}
           ;
 
@@ -150,7 +150,7 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
    | Exp DOT ID {$$=insert("Exp",3,$1,alloNodeC(".","DOT"),alloNodeC($3,"ID"));@$ = @1;$$->lineNo=(@1).first_line;}
    | ID {$$=insert("Exp",1,alloNodeC($1,"ID"));@$ = @1;$$->lineNo=(@1).first_line;}
    | INT {$$=insert("Exp",1,alloNodeI($1,"INT"));@$ = @1;$$->lineNo=(@1).first_line;}
-   | FLOAT {$$=insert("Exp",1,alloNodeF($1,"FLOAT"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | FLOAT {$$=insert("Exp",1,alloNodeC($1,"FLOAT"));@$ = @1;$$->lineNo=(@1).first_line;}
    | CHAR {$$=insert("Exp",1,alloNodeC($1,"CHAR"));@$ = @1;$$->lineNo=(@1).first_line;}
    ;
 
