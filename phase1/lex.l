@@ -44,7 +44,14 @@ digit [0-9]
 "}" { return RC; }
 
 {digit}{digit}*"\."{digit}{digit}* {yylval.string_value = strdup(yytext); return FLOAT;}
-
+{digit}*{letter_}({letter_}|{digit})* {
+	if(yytext[0] >= '0' && yytext[1] <= '9'){
+		printf("%s\n","Invalid Identifier");
+	}
+	else{
+		yylval.string_value = strdup(yytext);return ID;
+	}
+	} 
 {digit}*|("0x"|"0X")({digit}|"a"|"b"|"c"|"d"|"e"|"f"|"A"|"B"|"C"|"D"|"E"|"F")({digit}|"A"|"B"|"C"|"D"|"E"|"F")* {
 	if(strlen(yytext) != 1 && yytext[0] == '0' && yytext[1] != 'x' && yytext[1] != 'X'){
 		printf("%s\n","Invalid Int");
@@ -57,8 +64,6 @@ digit [0-9]
 		return INT;
 	}
 }
-
-{letter_}({letter_}|{digit})* {yylval.string_value = strdup(yytext);return ID;} 
 
 
 "\n" {}
