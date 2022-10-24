@@ -1,0 +1,6 @@
+#include <b.txt>
+#include "c.txt"
+
+int main(){
+    int a = 2;
+}

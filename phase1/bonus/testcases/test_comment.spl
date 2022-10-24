@@ -1,0 +1,10 @@
+int main()
+{
+    //initial variable a 
+    int a = 1;
+    /* 
+    initial variable b and c
+    */
+    int b = 2;
+    int c = 3;
+}
