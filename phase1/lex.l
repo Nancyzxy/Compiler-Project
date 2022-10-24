@@ -45,7 +45,7 @@ digit [0-9]
 
 {digit}{digit}*"\."{digit}{digit}* {yylval.string_value = strdup(yytext); return FLOAT;}
 {digit}*{letter_}({letter_}|{digit})* {
-	if(yytext[0] >= '0' && yytext[1] <= '9'){
+	if(yytext[0] >= '0' && yytext[0] <= '9'){
 		printf("%s\n","Invalid Identifier");
 	}
 	else{
