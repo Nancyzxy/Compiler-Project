@@ -64,15 +64,15 @@ hex {digit}|"a"|"b"|"c"|"d"|"e"|"f"|"A"|"B"|"C"|"D"|"E"|"F"
 [\t\r ]+ {}
 (\'.\')|((\'\\x({digit}|{letter})*)\')  {
 	if(yytext[1] == '\\' && strlen(yytext) > 6){
-		printf("%s\n", "Invalid Char");
+		yylval.string_value =strdup(yytext);return FAULT;
 	}
-	if(yytext[1] == '\\' && yytext[2] == 'x' && yytext[3] >= '0' && yytext[3] <= '7' && (yytext[4] >= '0' && yytext[4] <= 9 || yytext[4] >= 'a' && yytext[4] <= 'f' || yytext[4] >='A' && yytext[4] <= 'F')){
+	if(yytext[1] == '\\' && yytext[2] == 'x' && yytext[3] >= '0' && yytext[3] <= '7' && (yytext[4] >= '0' && yytext[4] <= '9' || yytext[4] >= 'a' && yytext[4] <= 'f' || yytext[4] >='A' && yytext[4] <= 'F')){
 		if(yytext[3] == '7' && (yytext[4] >= '0' && yytext[4] <= '9' || yytext[4] >= 'A' && yytext[4] <= 'E' || yytext[4] >= 'a' && yytext[4] <= 'e')){
 			yylval.string_value = strdup(yytext);
 			return CHAR;
 		}
 		else if(yytext[3] == '7'){
-			printf("%s\n", "Invalid Char");		
+			yylval.string_value =strdup(yytext); return FAULT;	
 		}
 		else {
 			yylval.string_value = strdup(yytext);
@@ -83,7 +83,9 @@ hex {digit}|"a"|"b"|"c"|"d"|"e"|"f"|"A"|"B"|"C"|"D"|"E"|"F"
 		yylval.string_value = strdup(yytext);
 		return CHAR;
 	}
-	else printf("%s\n", "Invalid Char");
+	else{
+		 yylval.string_value =strdup(yytext); return FAULT;
+	}
 	}
 
 . {yylval.string_value =strdup(yytext); printf ("%s",yytext);return FAULT;}
