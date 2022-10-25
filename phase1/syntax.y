@@ -24,7 +24,7 @@
 }
 %token<int_value> INT 
 %token<string_value>FLOAT 
-%token<string_value>CHAR ID TYPE FAULT
+%token<string_value>CHAR ID TYPE
 %token<treeNode> STRUCT IF WHILE RETURN SEMI COMMA
 %type <treeNode> Args Exp Dec DecList Def DefList Stmt StmtList CompSt ParamDec VarList FunDec VarDec StructSpecifier Specifier ExtDecList ExtDef ExtDefList Program
 %nonassoc<treeNode> LOWER_ELSE
@@ -39,6 +39,7 @@
 %left<treeNode> MUL DIV
 %right<treeNode> NOT
 %left<treeNode> LP RP LB RB LC RC DOT
+%left<string_value> FAULT
 %%
 
 Program : ExtDefList {
@@ -156,7 +157,7 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
    | CHAR {$$=insert("Exp",1,alloNodeC($1,"CHAR"));@$ = @1;$$->lineNo=(@1).first_line;}
    | FAULT error %prec LOWER_ELSE{flag=1; printf("Error type A at Line %d: unknown lexeme %s\n",(@1).first_line,$1);}
    | ID LP Args error {flag=1; printf("Error type B at Line %d Missing closing parenthesis ')'\n",(@3).first_line);}
-    ;
+   | Exp FAULT Exp error{flag=1; printf("Error type A at Line %d: unknown lexeme %s\n",(@2).first_line,$2);};
 
 Args: Exp COMMA Args {$2= alloNodeC(",","COMMA"); $$ = insert("Args",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;}
     | Exp {$$ = insert("Args",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
