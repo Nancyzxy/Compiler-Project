@@ -62,9 +62,12 @@ hex {digit}|"a"|"b"|"c"|"d"|"e"|"f"|"A"|"B"|"C"|"D"|"E"|"F"
 
 "\n" {}
 [\t\r ]+ {}
-(\'.\')|((\'\\x{hex}{hex})\')  {
-	if(yytext[1] == '\\' && yytext[2] == 'x' && yytext[3] >= '0' && yytext[3] <= '7'){
-		if(yytext[3] == '7' && (yytext[4] >= '0' && yytext[4] <= '9' || yytext[4] >= 'A' && yytext[4] <= 'E')){
+(\'.\')|((\'\\x({digit}|{letter})*)\')  {
+	if(yytext[1] == '\\' && strlen(yytext) > 6){
+		printf("%s\n", "Invalid Char");
+	}
+	if(yytext[1] == '\\' && yytext[2] == 'x' && yytext[3] >= '0' && yytext[3] <= '7' && (yytext[4] >= '0' && yytext[4] <= 9 || yytext[4] >= 'a' && yytext[4] <= 'f' || yytext[4] >='A' && yytext[4] <= 'F')){
+		if(yytext[3] == '7' && (yytext[4] >= '0' && yytext[4] <= '9' || yytext[4] >= 'A' && yytext[4] <= 'E' || yytext[4] >= 'a' && yytext[4] <= 'e')){
 			yylval.string_value = strdup(yytext);
 			return CHAR;
 		}
