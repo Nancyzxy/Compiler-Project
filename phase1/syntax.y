@@ -6,6 +6,7 @@
     #include <string.h>
     #define EXIT_OK 0
     #define EXIT_FAIL 1
+    int flag = 0;
     node* insert(char* parent,int count,...);
     void yyerror(const char*);
     node* alloNodeI(int a,char * Name);
@@ -23,7 +24,7 @@
 }
 %token<int_value> INT 
 %token<string_value>FLOAT 
-%token<string_value>CHAR ID TYPE
+%token<string_value>CHAR ID TYPE FAULT
 %token<treeNode> STRUCT IF WHILE RETURN SEMI COMMA
 %type <treeNode> Args Exp Dec DecList Def DefList Stmt StmtList CompSt ParamDec VarList FunDec VarDec StructSpecifier Specifier ExtDecList ExtDef ExtDefList Program
 %nonassoc<treeNode> LOWER_ELSE
@@ -43,8 +44,7 @@
 Program : ExtDefList {
     $$ = insert("Program",1,$1);
     @$ = @1;$$->lineNo=(@1).first_line;
-    freopen("out.txt","w",stdout);
-    printTree($$,0);
+    if(flag ==0){printTree($$,0);}
     freeNode($$);
     };
 
@@ -85,6 +85,7 @@ VarDec: ID {$$ = insert("VarDec",1,alloNodeC($1,"ID"));@$ = @1;$$->lineNo=(@1).f
 
 FunDec: ID LP VarList RP {$$ = insert("FunDec",4,alloNodeC($1,"ID"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
       | ID LP RP {$$ = insert("FunDec",3,alloNodeC($1,"ID"),alloNodeC("(","LP"),alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
+      | ID LP error {flag=1; printf("Error type B at Line %d: Missing closing parenthesis ')'\n",(@2).first_line);}
       ;
 
 VarList: ParamDec COMMA VarList {$$ = insert("VarList",3,$1,alloNodeC(",","COMMA"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
@@ -109,6 +110,7 @@ Stmt: Exp SEMI {$$ = insert("Stmt",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineN
     | IF LP Exp RP Stmt %prec LOWER_ELSE {$$ = insert("Stmt",5,alloNodeC("if","IF"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"),$5);@$ = @1;$$->lineNo=(@1).first_line;}
     | IF LP Exp RP Stmt ELSE Stmt {$$ = insert("Stmt",7,alloNodeC("if","IF"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"),$5,alloNodeC("else","ELSE"),$7);@$ = @1;$$->lineNo=(@1).first_line;}
     | WHILE LP Exp RP Stmt {$$ = insert("Stmt",5,alloNodeC("while","WHILE"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"),$5);@$ = @1;$$->lineNo=(@1).first_line;}
+    | RETURN Exp error {flag=1; printf("Error type B at Line %d: Missing semicolon ';'\n",(@2).first_line); }
     ;
 
 /* local definition */
@@ -152,7 +154,9 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
    | INT {$$=insert("Exp",1,alloNodeI($1,"INT"));@$ = @1;$$->lineNo=(@1).first_line;}
    | FLOAT {$$=insert("Exp",1,alloNodeC($1,"FLOAT"));@$ = @1;$$->lineNo=(@1).first_line;}
    | CHAR {$$=insert("Exp",1,alloNodeC($1,"CHAR"));@$ = @1;$$->lineNo=(@1).first_line;}
-   ;
+   | FAULT error %prec LOWER_ELSE{flag=1; printf("Error type A at Line %d: unknown lexeme %s\n",(@1).first_line,$1);}
+   | ID LP Args error {flag=1; printf("Error type B at Line %d Missing closing parenthesis ')'\n",(@3).first_line);}
+    ;
 
 Args: Exp COMMA Args {$2= alloNodeC(",","COMMA"); $$ = insert("Args",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;}
     | Exp {$$ = insert("Args",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
@@ -160,7 +164,7 @@ Args: Exp COMMA Args {$2= alloNodeC(",","COMMA"); $$ = insert("Args",3,$1,$2,$3)
 
 %%
 void yyerror(const char *s) {
-    fprintf(stderr, "%s at line %d\n", s, yylineno);
+    //fprintf(stderr, "%s at line %d\n", s, yylineno);
 }
 
 void freeNode(node* root){
@@ -253,6 +257,7 @@ node* insert(char * parent,int count, ...){
 
 int main(int argc, char **argv) {
     char *file_path;
+    freopen("out.txt","w",stdout);
     if(argc < 2){
         fprintf(stderr, "Usage: %s <file_path>\n", argv[0]);
         return EXIT_FAIL;

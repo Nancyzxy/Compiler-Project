@@ -58,10 +58,10 @@ hex {digit}|"a"|"b"|"c"|"d"|"e"|"f"|"A"|"B"|"C"|"D"|"E"|"F"
 		return INT;
 	}
 }
-
+{digit}({letter_}|{digit})* {yylval.string_value =strdup(yytext); return FAULT;}
 
 "\n" {}
-"\t"|"\r" {}
+[\t\r ]+ {}
 (\'.\')|((\'\\x{hex}{hex})\')  {
 	if(yytext[1] == '\\' && yytext[2] == 'x' && yytext[3] >= '0' && yytext[3] <= '7'){
 		if(yytext[3] == '7' && (yytext[4] >= '0' && yytext[4] <= '9' || yytext[4] >= 'A' && yytext[4] <= 'E')){
@@ -82,6 +82,8 @@ hex {digit}|"a"|"b"|"c"|"d"|"e"|"f"|"A"|"B"|"C"|"D"|"E"|"F"
 	}
 	else printf("%s\n", "Invalid Char");
 	}
+
+. {yylval.string_value =strdup(yytext); printf ("%s",yytext);return FAULT;}
 %%
 
 int hexToDec(char * hex){
