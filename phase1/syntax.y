@@ -82,11 +82,12 @@ StructSpecifier: STRUCT ID LC DefList RC {
 /* declarator */
 VarDec: ID {$$ = insert("VarDec",1,alloNodeC($1,"ID"));@$ = @1;$$->lineNo=(@1).first_line;}
       | VarDec LB INT RB {$$ = insert("VarDec",4,$1,alloNodeC("[","LB"),alloNodeI($3,"INT"),alloNodeC("]","RB"));@$ = @1;$$->lineNo=(@1).first_line;}
+      | FAULT error {flag=1; printf("Error type A at Line %d: unknown lexeme %s\n",(@1).first_line,$1);}
       ;
 
 FunDec: ID LP VarList RP {$$ = insert("FunDec",4,alloNodeC($1,"ID"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
       | ID LP RP {$$ = insert("FunDec",3,alloNodeC($1,"ID"),alloNodeC("(","LP"),alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
-      | ID LP error {flag=1; printf("Error type B at Line %d: Missing closing parenthesis ')'\n",(@2).first_line);}
+      | ID LP error {flag=1; printf("111 B at Line %d: Missing closing parenthesis ')'\n",(@2).first_line);}
       ;
 
 VarList: ParamDec COMMA VarList {$$ = insert("VarList",3,$1,alloNodeC(",","COMMA"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
@@ -99,6 +100,7 @@ ParamDec: Specifier VarDec {$$ = insert("ParamDec",2,$1,$2);@$ = @1;$$->lineNo=(
 
 /* statement */
 CompSt: LC DefList StmtList RC {$$ = insert("CompSt",4,alloNodeC("{","LC"),$2,$3,alloNodeC("}","RC"));@$ = @1;$$->lineNo=(@1).first_line;}
+      | LC DefList StmtList error {flag=1; printf("Error type B at Line %d: Missing specifier\n",(@3).first_line);}
       ;
 
 StmtList: Stmt StmtList  {$$ = insert("StmtList",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;}
@@ -120,6 +122,7 @@ DefList: Def DefList {$$ = insert("DefList",2,$1,$2);@$ = @1;$$->lineNo=(@1).fir
        ;
 
 Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;}
+    |Specifier DecList error{flag=1; printf("Error type B at Line %d: Missing semicolon ';'\n",(@2).first_line);}
    ;
 
 DecList: Dec {$$ = insert("DecList",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
@@ -155,8 +158,8 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
    | INT {$$=insert("Exp",1,alloNodeI($1,"INT"));@$ = @1;$$->lineNo=(@1).first_line;}
    | FLOAT {$$=insert("Exp",1,alloNodeC($1,"FLOAT"));@$ = @1;$$->lineNo=(@1).first_line;}
    | CHAR {$$=insert("Exp",1,alloNodeC($1,"CHAR"));@$ = @1;$$->lineNo=(@1).first_line;}
-   | FAULT error %prec LOWER_ELSE{flag=1; printf("Error type A at Line %d: unknown lexeme %s\n",(@1).first_line,$1);}
-   | ID LP Args error {flag=1; printf("Error type B at Line %d Missing closing parenthesis ')'\n",(@3).first_line);}
+   | FAULT error {flag=1; printf("Error type A at Line %d: unknown lexeme %s\n",(@1).first_line,$1);}
+   | ID LP Args error {flag=1; printf("Error type B at Line %d: Missing closing parenthesis ')'\n",(@3).first_line);}
    | Exp FAULT Exp error{flag=1; printf("Error type A at Line %d: unknown lexeme %s\n",(@2).first_line,$2);};
 
 Args: Exp COMMA Args {$2= alloNodeC(",","COMMA"); $$ = insert("Args",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;}
@@ -268,7 +271,7 @@ int main(int argc, char **argv) {
             perror(argv[1]);
             return EXIT_FAIL;
         }
-        //yydebug = 1;
+        // yydebug = 1;
         yyparse();
     } else{
         fputs("Too many arguments! Expected: 2.\n", stderr);

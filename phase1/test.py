@@ -19,9 +19,21 @@ def check_right():
   data = DATA/'right'
   for spl in data.glob('*.spl'):
     spl = spl.__str__()
-    out = execute(spl)
+    execute(spl)
     m = re.match(r'(.+).spl', spl)
     diff = compare_result(m.group(1)+".out","out.txt")
     print(spl+": " + diff)
 
+def check_wrong():
+  data = DATA/'wrong'
+  for spl in data.glob('*.spl'):
+    spl = spl.__str__()
+    execute(spl)
+    m = re.match(r'(.+).spl', spl)
+    diff = compare_result(m.group(1)+".out","out.txt")
+    print(spl+": " + diff)
+
+print("right:")
 check_right()
+print("wrong:")
+check_wrong()

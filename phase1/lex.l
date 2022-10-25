@@ -3,7 +3,7 @@
 	#include "stdlib.h"
     #include <string.h>
     #include "syntax.tab.h"
-	#define YY_USER_ACTION  yylloc.first_line = yylineno;
+	#define YY_USER_ACTION  yylloc.first_line = yylineno; 
 	int hexToDec(char * hex);
 %}
 
@@ -48,10 +48,10 @@ hex {digit}|"a"|"b"|"c"|"d"|"e"|"f"|"A"|"B"|"C"|"D"|"E"|"F"
 
 {digit}*|("0x"|"0X"){hex}{hex}* {
 	if(strlen(yytext) != 1 && yytext[0] == '0' && yytext[1] != 'x' && yytext[1] != 'X'){
-		printf("%s\n","Invalid Int");
+		yylval.string_value =strdup(yytext); return FAULT;
 	}
 	else if(strlen(yytext) > 3 && yytext[0] == '0' && (yytext[1] == 'x' || yytext[1] == 'X')&& yytext[2] == '0'){
-		printf("%s\n", "Invalid int");		
+		yylval.string_value =strdup(yytext); return FAULT;
 	} 
 	else {
 		yylval.int_value = hexToDec(yytext);
@@ -62,33 +62,42 @@ hex {digit}|"a"|"b"|"c"|"d"|"e"|"f"|"A"|"B"|"C"|"D"|"E"|"F"
 
 "\n" {}
 [\t\r ]+ {}
-(\'.\')|((\'\\x({digit}|{letter})*)\')  {
-	if(yytext[1] == '\\' && strlen(yytext) > 6){
-		yylval.string_value =strdup(yytext);return FAULT;
-	}
-	if(yytext[1] == '\\' && yytext[2] == 'x' && yytext[3] >= '0' && yytext[3] <= '7' && (yytext[4] >= '0' && yytext[4] <= '9' || yytext[4] >= 'a' && yytext[4] <= 'f' || yytext[4] >='A' && yytext[4] <= 'F')){
-		if(yytext[3] == '7' && (yytext[4] >= '0' && yytext[4] <= '9' || yytext[4] >= 'A' && yytext[4] <= 'E' || yytext[4] >= 'a' && yytext[4] <= 'e')){
-			yylval.string_value = strdup(yytext);
-			return CHAR;
-		}
-		else if(yytext[3] == '7'){
-			yylval.string_value =strdup(yytext); return FAULT;	
-		}
-		else {
-			yylval.string_value = strdup(yytext);
-			return CHAR;
-		}
-	}
-	else if(yytext[1] >= 32 && yytext[1] <= 126) {
-		yylval.string_value = strdup(yytext);
-		return CHAR;
-	}
-	else{
-		 yylval.string_value =strdup(yytext); return FAULT;
-	}
-	}
 
-. {yylval.string_value =strdup(yytext); printf ("%s",yytext);return FAULT;}
+(\'.*\') {
+ if(yytext[1] != '\\' && strlen(yytext) > 3){
+  yylval.string_value =strdup(yytext); return FAULT;
+ }
+ else if(yytext[1] != '\\' && yytext[1] >= 32 && yytext[1] <= 126) {
+  yylval.string_value =strdup(yytext); return CHAR;
+ }
+ else if(yytext[1] == '\\' && (strlen(yytext) !=6)){
+  yylval.string_value =strdup(yytext); return FAULT;
+ }
+ else if(yytext[1] == '\\' && (yytext[2] == 'x' || yytext[2] == 'X')){
+  int index = 3;
+  int ifValid = 1;
+  while(index <= strlen(yytext) - 2){
+       if(!(yytext[index] >= '0' && yytext[index] <= '9' || yytext[index] >= 'a' && yytext[index] <= 'f' || yytext[index] >= 'A' && yytext[index] <= 'F')){
+   ifValid = 0;
+   break;
+   }
+       index++;   
+  }
+  if(ifValid){
+   yylval.string_value =strdup(yytext); return CHAR;  
+  }
+  else{
+   yylval.string_value =strdup(yytext); return FAULT; 
+  }
+ }
+ 
+ else{
+  yylval.string_value =strdup(yytext); return FAULT;
+ }
+ }
+
+
+. {yylval.string_value =strdup(yytext); return FAULT;}
 %%
 
 int hexToDec(char * hex){
