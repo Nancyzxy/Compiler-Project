@@ -44,14 +44,8 @@ hex {digit}|"a"|"b"|"c"|"d"|"e"|"f"|"A"|"B"|"C"|"D"|"E"|"F"
 "}" { return RC; }
 
 {digit}{digit}*"\."{digit}{digit}* {yylval.string_value = strdup(yytext); return FLOAT;}
-{digit}*{letter_}({letter_}|{digit})* {
-	if(yytext[0] >= '0' && yytext[0] <= '9'){
-		printf("%s\n","Invalid Identifier");
-	}
-	else{
-		yylval.string_value = strdup(yytext);return ID;
-	}
-	} 
+{letter_}({letter_}|{digit})* {yylval.string_value = strdup(yytext);return ID;} 
+
 {digit}*|("0x"|"0X"){hex}{hex}* {
 	if(strlen(yytext) != 1 && yytext[0] == '0' && yytext[1] != 'x' && yytext[1] != 'X'){
 		printf("%s\n","Invalid Int");
@@ -71,12 +65,14 @@ hex {digit}|"a"|"b"|"c"|"d"|"e"|"f"|"A"|"B"|"C"|"D"|"E"|"F"
 (\'.\')|((\'\\x{hex}{hex})\')  {
 	if(yytext[1] == '\\' && yytext[2] == 'x' && yytext[3] >= '0' && yytext[3] <= '7'){
 		if(yytext[3] == '7' && (yytext[4] >= '0' && yytext[4] <= '9' || yytext[4] >= 'A' && yytext[4] <= 'E')){
+			yylval.string_value = strdup(yytext);
 			return CHAR;
 		}
 		else if(yytext[3] == '7'){
 			printf("%s\n", "Invalid Char");		
 		}
 		else {
+			yylval.string_value = strdup(yytext);
 			return CHAR;
 		}
 	}

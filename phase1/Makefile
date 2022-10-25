@@ -3,7 +3,7 @@ FLEX=flex
 BISON=bison
 splc:
 	@mkdir bin
-	$(BISON) -d -v -t --report all syntax.y
+	$(BISON) -d -t syntax.y
 	$(FLEX) lex.l
 	$(CC) syntax.tab.c -lfl -ly -o bin/splc
 	@chmod +x bin/splc

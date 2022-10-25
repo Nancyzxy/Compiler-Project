@@ -262,7 +262,7 @@ int main(int argc, char **argv) {
             perror(argv[1]);
             return EXIT_FAIL;
         }
-        yydebug = 1;
+        //yydebug = 1;
         yyparse();
     } else{
         fputs("Too many arguments! Expected: 2.\n", stderr);
