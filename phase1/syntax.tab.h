@@ -1,8 +1,9 @@
-/* A Bison parser, made by GNU Bison 3.0.4.  */
+/* A Bison parser, made by GNU Bison 3.5.1.  */
 
 /* Bison interface for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015, 2018-2020 Free Software Foundation,
+   Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -30,6 +31,9 @@
    This special exception was added by the Free Software Foundation in
    version 2.2 of Bison.  */
 
+/* Undocumented macros, especially those whose name start with YY_,
+   are private implementation details.  Do not rely on them.  */
+
 #ifndef YY_YY_SYNTAX_TAB_H_INCLUDED
 # define YY_YY_SYNTAX_TAB_H_INCLUDED
 /* Debug traces.  */
@@ -50,54 +54,56 @@ extern int yydebug;
     CHAR = 260,
     ID = 261,
     TYPE = 262,
-    STRUCT = 263,
-    IF = 264,
-    WHILE = 265,
-    RETURN = 266,
-    SEMI = 267,
-    COMMA = 268,
-    LOWER_ELSE = 269,
-    ELSE = 270,
-    ASSIGN = 271,
-    OR = 272,
-    AND = 273,
-    NE = 274,
-    EQ = 275,
-    LT = 276,
-    LE = 277,
-    GT = 278,
-    GE = 279,
-    PLUS = 280,
-    MINUS = 281,
-    MUL = 282,
-    DIV = 283,
-    NOT = 284,
-    LP = 285,
-    RP = 286,
-    LB = 287,
-    RB = 288,
-    LC = 289,
-    RC = 290,
-    DOT = 291,
-    FAULT = 292
+    INCLUSION = 263,
+    DEFINE = 264,
+    STRUCT = 265,
+    IF = 266,
+    WHILE = 267,
+    RETURN = 268,
+    SEMI = 269,
+    COMMA = 270,
+    FOR = 271,
+    LOWER_ELSE = 272,
+    ELSE = 273,
+    ASSIGN = 274,
+    OR = 275,
+    AND = 276,
+    NE = 277,
+    EQ = 278,
+    LT = 279,
+    LE = 280,
+    GT = 281,
+    GE = 282,
+    PLUS = 283,
+    MINUS = 284,
+    MUL = 285,
+    DIV = 286,
+    NOT = 287,
+    LP = 288,
+    RP = 289,
+    LB = 290,
+    RB = 291,
+    LC = 292,
+    RC = 293,
+    DOT = 294,
+    FAULT = 295
   };
 #endif
 
 /* Value type.  */
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
-
 union YYSTYPE
 {
-#line 19 "syntax.y" /* yacc.c:1909  */
+#line 19 "syntax.y"
 
     node* treeNode;
     int int_value;
     float float_value;
     char* string_value;
 
-#line 99 "syntax.tab.h" /* yacc.c:1909  */
-};
+#line 105 "syntax.tab.h"
 
+};
 typedef union YYSTYPE YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define YYSTYPE_IS_DECLARED 1

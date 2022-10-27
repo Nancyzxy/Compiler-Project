@@ -1,4 +1,0 @@
-int max(){
-    float c = 5;
-    printf("hello");
-}

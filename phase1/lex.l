@@ -43,6 +43,13 @@ hex {digit}|"a"|"b"|"c"|"d"|"e"|"f"|"A"|"B"|"C"|"D"|"E"|"F"
 "{" { return LC; }
 "}" { return RC; }
 
+"for" {return FOR;}
+"//"[^\n]*\n { printf("single-line comment %s\n",yytext);}
+"/*"([^*]|\*+[^/*])*"*/" { printf("multi-line comment %s\n",yytext);}
+#include[ ]+((<.*>)|(".*")) {return INCLUSION;}
+#define[ ]+.+[ ]+.+  {return DEFINE;}
+
+
 {digit}{digit}*"\."{digit}{digit}* {yylval.string_value = strdup(yytext); return FLOAT;}
 {letter_}({letter_}|{digit})* {yylval.string_value = strdup(yytext);return ID;} 
 

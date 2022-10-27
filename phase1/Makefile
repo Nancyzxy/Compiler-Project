@@ -5,7 +5,7 @@ splc:
 	@mkdir bin
 	$(BISON) -d -t syntax.y
 	$(FLEX) lex.l
-	$(CC) syntax.tab.c -lfl -ly -o bin/splc
+	$(CC) syntax.tab.c -lfl -o bin/splc
 	@chmod +x bin/splc
 flex:
 	$(FLEX) lex1.l

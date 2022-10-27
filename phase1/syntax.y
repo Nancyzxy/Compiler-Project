@@ -24,9 +24,9 @@
 }
 %token<int_value> INT 
 %token<string_value>FLOAT 
-%token<string_value>CHAR ID TYPE
-%token<treeNode> STRUCT IF WHILE RETURN SEMI COMMA
-%type <treeNode> Args Exp Dec DecList Def DefList Stmt StmtList CompSt ParamDec VarList FunDec VarDec StructSpecifier Specifier ExtDecList ExtDef ExtDefList Program
+%token<string_value>CHAR ID TYPE INCLUSION DEFINE
+%token<treeNode> STRUCT IF WHILE RETURN SEMI COMMA FOR
+%type <treeNode> Args Exp Dec DecList Def DefList Stmt StmtList CompSt ParamDec VarList FunDec VarDec StructSpecifier Specifier ExtDecList ExtDef ExtDefList Program Header Headers
 %nonassoc<treeNode> LOWER_ELSE
 %nonassoc<treeNode> ELSE
 
@@ -42,12 +42,19 @@
 %left<string_value> FAULT
 %%
 
-Program : ExtDefList {
-    $$ = insert("Program",1,$1);
+Program : Headers ExtDefList {
+    $$ = insert("Program",2,$1,$2);
     @$ = @1;$$->lineNo=(@1).first_line;
     if(flag ==0){printTree($$,0);}
     freeNode($$);
     };
+
+Headers : Headers Header {$$ = insert("Headers",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;}
+    | {$$ = insert("Headers",0);}
+    ;
+Header : INCLUSION {$$=insert("Header",1,alloNodeC($1,"INCLUSION"));@$ = @1;$$->lineNo=(@1).first_line;}
+    | DEFINE {$$=insert("Header",1,alloNodeC($1,"DEFINE"));@$ = @1;$$->lineNo=(@1).first_line;}
+    ;
 
 ExtDefList: ExtDef ExtDefList { $$ = insert("ExtDefList",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;}
           | {$$ = insert("ExtDefList",0);}
@@ -114,6 +121,7 @@ Stmt: Exp SEMI {$$ = insert("Stmt",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineN
     | IF LP Exp RP Stmt ELSE Stmt {$$ = insert("Stmt",7,alloNodeC("if","IF"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"),$5,alloNodeC("else","ELSE"),$7);@$ = @1;$$->lineNo=(@1).first_line;}
     | WHILE LP Exp RP Stmt {$$ = insert("Stmt",5,alloNodeC("while","WHILE"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"),$5);@$ = @1;$$->lineNo=(@1).first_line;}
     | RETURN Exp error {flag=1; printf("Error type B at Line %d: Missing semicolon ';'\n",(@2).first_line); }
+    | FOR LP Exp SEMI Exp SEMI Exp RP Stmt {$$ = insert("Stmt",9,alloNodeC("for","FOR"),alloNodeC("(","LP"),$3,alloNodeC(";","SEMI"),$5,alloNodeC(";","SEMI"),$7,alloNodeC(")","RP"),$9);@$ = @1;$$->lineNo=(@1).first_line;}
     ;
 
 /* local definition */
