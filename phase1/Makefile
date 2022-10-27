@@ -12,4 +12,7 @@ flex:
 	$(CC) lex.yy.c -lfl -o bin/flex.out
 clean:
 	@rm -rf bin/
+	@rm syntax.tab.c
+	@rm syntax.tab.h
+	@rm lex.yy.c
 .PHONY: splc

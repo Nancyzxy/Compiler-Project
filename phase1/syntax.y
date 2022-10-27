@@ -13,7 +13,6 @@
     node* alloNodeF(float a,char * Name);
     node* alloNodeC(char* a,char * Name);
     void printTree(node* root,int blank);
-    void freeNode(node* root);
 %}
 
 %union{
@@ -46,7 +45,6 @@ Program : Headers ExtDefList {
     $$ = insert("Program",2,$1,$2);
     @$ = @1;$$->lineNo=(@1).first_line;
     if(flag ==0){printTree($$,0);}
-    freeNode($$);
     };
 
 Headers : Headers Header {$$ = insert("Headers",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;}
@@ -90,11 +88,12 @@ StructSpecifier: STRUCT ID LC DefList RC {
 VarDec: ID {$$ = insert("VarDec",1,alloNodeC($1,"ID"));@$ = @1;$$->lineNo=(@1).first_line;}
       | VarDec LB INT RB {$$ = insert("VarDec",4,$1,alloNodeC("[","LB"),alloNodeI($3,"INT"),alloNodeC("]","RB"));@$ = @1;$$->lineNo=(@1).first_line;}
       | FAULT error {flag=1; printf("Error type A at Line %d: unknown lexeme %s\n",(@1).first_line,$1);}
+      | VarDec LB error RB {flag=1; printf("Error type B at Line %d: Wrong type of index\n",(@1).first_line);}
       ;
 
 FunDec: ID LP VarList RP {$$ = insert("FunDec",4,alloNodeC($1,"ID"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
       | ID LP RP {$$ = insert("FunDec",3,alloNodeC($1,"ID"),alloNodeC("(","LP"),alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
-      | ID LP error {flag=1; printf("111 B at Line %d: Missing closing parenthesis ')'\n",(@2).first_line);}
+      | ID LP error {flag=1; printf("Error type B at Line %d: Missing closing parenthesis ')'\n",(@2).first_line);}
       ;
 
 VarList: ParamDec COMMA VarList {$$ = insert("VarList",3,$1,alloNodeC(",","COMMA"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
@@ -122,6 +121,7 @@ Stmt: Exp SEMI {$$ = insert("Stmt",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineN
     | WHILE LP Exp RP Stmt {$$ = insert("Stmt",5,alloNodeC("while","WHILE"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"),$5);@$ = @1;$$->lineNo=(@1).first_line;}
     | RETURN Exp error {flag=1; printf("Error type B at Line %d: Missing semicolon ';'\n",(@2).first_line); }
     | FOR LP Exp SEMI Exp SEMI Exp RP Stmt {$$ = insert("Stmt",9,alloNodeC("for","FOR"),alloNodeC("(","LP"),$3,alloNodeC(";","SEMI"),$5,alloNodeC(";","SEMI"),$7,alloNodeC(")","RP"),$9);@$ = @1;$$->lineNo=(@1).first_line;}
+    | Exp error {flag=1; printf("Error type B at Line %d: Missing semicolon ';'\n",(@1).first_line); }
     ;
 
 /* local definition */
@@ -177,22 +177,6 @@ Args: Exp COMMA Args {$2= alloNodeC(",","COMMA"); $$ = insert("Args",3,$1,$2,$3)
 %%
 void yyerror(const char *s) {
     //fprintf(stderr, "%s at line %d\n", s, yylineno);
-}
-
-void freeNode(node* root){
-    /*
-    if (root->child==NULL)
-    {   
-        free(root);
-        return;
-    }else{
-        node *p1= root->child;
-        while(p1!=NULL){
-            node* t=p1->next;
-            freeNode(p1);
-            node* p1=t;
-        }
-    }*/
 }
 
 void printTree(node* root, int blank){
@@ -269,7 +253,7 @@ node* insert(char * parent,int count, ...){
 
 int main(int argc, char **argv) {
     char *file_path;
-    freopen("out.txt","w",stdout);
+    //freopen("out.txt","w",stdout);
     if(argc < 2){
         fprintf(stderr, "Usage: %s <file_path>\n", argv[0]);
         return EXIT_FAIL;

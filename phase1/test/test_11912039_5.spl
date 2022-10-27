@@ -1,0 +1,14 @@
+int main()
+{
+    char c[10.0];
+    b = c || 2
+    mo=m;
+    no=n;
+    while(m/n>0)
+    {
+        r=m/n;
+        m=n;
+        n=r;
+    }
+}
+
