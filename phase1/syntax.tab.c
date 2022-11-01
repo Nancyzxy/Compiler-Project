@@ -2314,7 +2314,7 @@ node* insert(char * parent,int count, ...){
 
 int main(int argc, char **argv) {
     char *file_path;
-    //freopen("out.txt","w",stdout);
+    freopen("out.txt","w",stdout);
     if(argc < 2){
         fprintf(stderr, "Usage: %s <file_path>\n", argv[0]);
         return EXIT_FAIL;

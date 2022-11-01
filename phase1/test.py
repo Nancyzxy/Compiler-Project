@@ -3,8 +3,8 @@ import re
 import subprocess
 
 
-DATA = pathlib.Path('test_provide')
-
+DATA = pathlib.Path('project1_testcases/testcases')
+DATA = pathlib.Path('project1_testcases/testcases')
 
 def execute(file):
   out = subprocess.check_output(['bin/splc', file])
@@ -16,7 +16,8 @@ def compare_result(output0,output1):
 
 
 def check_right():
-  data = DATA/'right'
+  #data = DATA/'github_test'
+  data = DATA/'student_test'
   for spl in data.glob('*.spl'):
     spl = spl.__str__()
     execute(spl)
@@ -44,7 +45,3 @@ def check_our():
 
 print("right:")
 check_right()
-print("wrong:")
-check_wrong()
-print("our cases:")
-check_our()
