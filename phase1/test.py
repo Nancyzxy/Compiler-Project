@@ -16,8 +16,8 @@ def compare_result(output0,output1):
 
 
 def check_right():
-  #data = DATA/'github_test'
-  data = DATA/'student_test'
+  data = DATA/'github_test'
+  #data = DATA/'student_test'
   for spl in data.glob('*.spl'):
     spl = spl.__str__()
     execute(spl)
