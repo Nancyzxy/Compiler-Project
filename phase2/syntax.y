@@ -4,16 +4,18 @@
     #include <stdarg.h>
     #include <stdio.h>
     #include <string.h>
+    #include"symtab_bt.c"
     #define EXIT_OK 0
     #define EXIT_FAIL 1
     int flag = 0;
-    
+    symtab* root;
     node* insert(char* parent,int count,...);
     void yyerror(const char*);
     node* alloNodeI(int a,char * Name);
     node* alloNodeF(float a,char * Name);
     node* alloNodeC(char* a,char * Name);
     void printTree(node* root,int blank);
+    int valType(char * type);
 %}
 
 %union{
@@ -61,7 +63,15 @@ ExtDefList: ExtDef ExtDefList { $$ = insert("ExtDefList",2,$1,$2);@$ = @1;$$->li
 
 ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;}
       | Specifier SEMI {$$ = insert("ExtDef",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;}
-      | Specifier FunDec CompSt {$$ = insert("ExtDef",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;}
+      | Specifier FunDec CompSt {$$ = insert("ExtDef",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;
+            if(symtab_lookup(root, $2->child->attribute) != -1){
+                printf("Error type 4 at Line %d: redefine function: %s\n",(@1).first_line,$2->child->attribute);
+            }
+            else{
+              symtab_insert(root, $2->child->attribute, valType(($1->child->attribute)));  
+            }
+            
+      }
       ;
 
 ExtDecList: VarDec {$$ = insert("ExtDecList",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
@@ -101,8 +111,14 @@ VarList: ParamDec COMMA VarList {$$ = insert("VarList",3,$1,alloNodeC(",","COMMA
        | ParamDec {$$ = insert("VarList",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
        ;
 
-ParamDec: Specifier VarDec {$$ = insert("ParamDec",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;}
-        ;
+ParamDec: Specifier VarDec {$$ = insert("ParamDec",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line; if( symtab_lookup(root, $2->child->attribute) != -1){
+                printf("Error Type 3 at Line %d: redefine variable: %s", (@1).first_line,$2->child->attribute);
+}
+                else{
+                        symtab_insert(root, $2->child->attribute, valType(($1->child->attribute)));
+                }
+};
+        
 
 
 /* statement */
@@ -130,7 +146,34 @@ DefList: Def DefList {$$ = insert("DefList",2,$1,$2);@$ = @1;$$->lineNo=(@1).fir
        |    /*empty terminal*/  {$$ = insert("DefList",0);}
        ;
 
-Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;}
+Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;
+        if(symtab_lookup(root, $2->child->child->child->attribute) != -1){
+            printf("Error Type 3 at Line %d: redefine variable: %s\n", (@1).first_line,$2->child->child->child->attribute);
+        }
+        else{
+            symtab_insert(root, $2->child->child->child->attribute, valType(($1->child->attribute)));
+            // int val = valType(($1->child->attribute));
+            // int cmpVal = 0;
+            // if($2->child->child->next != NULL){
+            //     printf("%s\n",$2->child->child->next->next->child->name);
+            //     if(strcmp($2->child->child->next->next->child->name, "ID") == 0){
+            //         cmpVal = symtab_lookup(root, $2->child->child->next->next->child->attribute);
+            //         printf("1\n");
+            //         if(val != cmpVal){
+            //             printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
+            //         }
+            //     }
+            //     else{
+            //         cmpVal = valType($2->child->child->next->next->child->name);
+            //         if(val != cmpVal){
+            //             printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
+            //         }
+            //     }
+
+                
+            // }
+        }
+}
     |Specifier DecList error{flag=1; printf("Error type B at Line %d: Missing semicolon ';'\n",(@2).first_line);}
    ;
 
@@ -143,7 +186,16 @@ Dec: VarDec {$$=insert("Dec",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
    ;
 
 /* Expression */
-Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;}
+Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;
+        int val = symtab_lookup(root, $1->child->attribute);
+        int cmpVal = 0;
+        if(strcmp($3->child->child->name, "ID") == 0){
+            cmpVal = symtab_lookup(root, $3->child->child->attribute);
+            if(val != cmpVal){
+                    printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
+            }
+        }
+}
    | Exp AND Exp {$$=insert("Exp",3,$1,alloNodeC("&&","AND"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
    | Exp OR Exp {$$=insert("Exp",3,$1,alloNodeC("||","OR"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
    | Exp LT Exp {$$=insert("Exp",3,$1,alloNodeC("<","LT"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
@@ -159,11 +211,11 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
    | LP Exp RP {$$=insert("Exp",3,alloNodeC("(","LP"),$2,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
    | MINUS Exp {$$=insert("Exp",2,alloNodeC("-","MINUS"),$2);@$ = @1;$$->lineNo=(@1).first_line;}
    | NOT Exp {$$=insert("Exp",2,alloNodeC("!","NOT"),$2);@$ = @1;$$->lineNo=(@1).first_line;}
-   | ID LP Args RP {$$=insert("Exp",4,alloNodeC($1,"ID"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
-   | ID LP RP {$$=insert("Exp",3,alloNodeC($1,"ID"),alloNodeC("(","LP"),alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | ID LP Args RP {$$=insert("Exp",4,alloNodeC($1,"ID"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;if(symtab_lookup(root, $1) == -1){printf("Error Type 2 at Line %d: undefined function: %s\n", (@1).first_line,$1);}}
+   | ID LP RP {$$=insert("Exp",3,alloNodeC($1,"ID"),alloNodeC("(","LP"),alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line; if(symtab_lookup(root, $1) == -1){printf("Error Type  2 at Line %d :  function %s is used without definition", (@1).first_line,$1);}}
    | Exp LB Exp RB {$$=insert("Exp",4,$1,alloNodeC("[","LB"),$3,alloNodeC("]","RB"));@$ = @1;$$->lineNo=(@1).first_line;}
    | Exp DOT ID {$$=insert("Exp",3,$1,alloNodeC(".","DOT"),alloNodeC($3,"ID"));@$ = @1;$$->lineNo=(@1).first_line;}
-   | ID {$$=insert("Exp",1,alloNodeC($1,"ID"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | ID {$$=insert("Exp",1,alloNodeC($1,"ID"));@$ = @1;$$->lineNo=(@1).first_line; if(symtab_lookup(root, $1) == -1){printf("Error Type 1 at Line %d: undefined variable: %s\n", (@1).first_line,$1);} }
    | INT {$$=insert("Exp",1,alloNodeI($1,"INT"));@$ = @1;$$->lineNo=(@1).first_line;}
    | FLOAT {$$=insert("Exp",1,alloNodeC($1,"FLOAT"));@$ = @1;$$->lineNo=(@1).first_line;}
    | CHAR {$$=insert("Exp",1,alloNodeC($1,"CHAR"));@$ = @1;$$->lineNo=(@1).first_line;}
@@ -252,9 +304,21 @@ node* insert(char * parent,int count, ...){
     return p;
 }
 
+int valType(char * type){
+    if(strcmp(type, "INT") == 0 || strcmp(type, "int") == 0){
+        return 1;
+    }
+    if(strcmp(type,"FLOAT") == 0 || strcmp(type,"float") == 0){
+        return 2;
+    }
+    if(strcmp(type, "CHAR") == 0 || strcmp(type, "char") == 0){
+        return 3;
+    }
+}
 int main(int argc, char **argv) {
     char *file_path;
     freopen("out.txt","w",stdout);
+    root =  symtab_init();
     if(argc < 2){
         fprintf(stderr, "Usage: %s <file_path>\n", argv[0]);
         return EXIT_FAIL;

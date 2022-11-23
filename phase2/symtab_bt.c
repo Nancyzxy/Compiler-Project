@@ -76,7 +76,7 @@ VAL_T symtab_lookup(symtab *self, char *key){
 
 symtab * parent = NULL;
 int isLeft = 0;
-int flag = 1;
+
 int symtab_remove(symtab *self, char *key){
     if (self == NULL || !&self->entry )
     {   
