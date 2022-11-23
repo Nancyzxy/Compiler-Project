@@ -111,11 +111,15 @@ VarList: ParamDec COMMA VarList {$$ = insert("VarList",3,$1,alloNodeC(",","COMMA
        | ParamDec {$$ = insert("VarList",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
        ;
 
-ParamDec: Specifier VarDec {$$ = insert("ParamDec",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line; if( symtab_lookup(root, $2->child->attribute) != -1){
+ParamDec: Specifier VarDec {$$ = insert("ParamDec",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line; 
+                if( symtab_lookup(root, $2->child->attribute) != -1){
                 printf("Error Type 3 at Line %d: redefine variable: %s", (@1).first_line,$2->child->attribute);
-}
+                }
                 else{
-                        symtab_insert(root, $2->child->attribute, valType(($1->child->attribute)));
+                        if(strcmp($1->child->name, "TYPE") == 0){
+                            symtab_insert(root, $2->child->attribute, valType(($1->child->attribute)));
+                        }
+                        
                 }
 };
         
@@ -147,32 +151,39 @@ DefList: Def DefList {$$ = insert("DefList",2,$1,$2);@$ = @1;$$->lineNo=(@1).fir
        ;
 
 Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;
-        if(symtab_lookup(root, $2->child->child->child->attribute) != -1){
+        if(strcmp($2->child->child->child->name, "ID") == 0){
+            if(symtab_lookup(root, $2->child->child->child->attribute) != -1){
             printf("Error Type 3 at Line %d: redefine variable: %s\n", (@1).first_line,$2->child->child->child->attribute);
-        }
-        else{
-            symtab_insert(root, $2->child->child->child->attribute, valType(($1->child->attribute)));
-            // int val = valType(($1->child->attribute));
-            // int cmpVal = 0;
-            // if($2->child->child->next != NULL){
-            //     printf("%s\n",$2->child->child->next->next->child->name);
-            //     if(strcmp($2->child->child->next->next->child->name, "ID") == 0){
-            //         cmpVal = symtab_lookup(root, $2->child->child->next->next->child->attribute);
-            //         printf("1\n");
-            //         if(val != cmpVal){
-            //             printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
-            //         }
-            //     }
-            //     else{
-            //         cmpVal = valType($2->child->child->next->next->child->name);
-            //         if(val != cmpVal){
-            //             printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
-            //         }
-            //     }
+            }
+            else{
+                if(strcmp($1->child->name, "TYPE") == 0){
+                    symtab_insert(root, $2->child->child->child->attribute, valType(($1->child->attribute)));
+                    int val = valType(($1->child->attribute));
+                    int cmpVal = 0;
+                    if($2->child->child->next != NULL){
+                        if(strcmp($2->child->child->next->next->child->name,"Exp") == 0){
+                            if(strcmp($2->child->child->next->next->child->child->name, "ID") == 0){
+                            cmpVal = symtab_lookup(root, $2->child->child->next->next->child->child->attribute);
+                            if(val != cmpVal){
+                                printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
+                            }
+                        }
+                        }
+                        
+                        else{
+                            cmpVal = valType($2->child->child->next->next->child->name);
+                            if(val != cmpVal){
+                                printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
+                            }
+                        }
 
-                
-            // }
+                    
+                }
+                }
+            
         }
+        }
+        
 }
     |Specifier DecList error{flag=1; printf("Error type B at Line %d: Missing semicolon ';'\n",(@2).first_line);}
    ;
@@ -187,14 +198,28 @@ Dec: VarDec {$$=insert("Dec",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
 
 /* Expression */
 Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;
-        int val = symtab_lookup(root, $1->child->attribute);
-        int cmpVal = 0;
-        if(strcmp($3->child->child->name, "ID") == 0){
-            cmpVal = symtab_lookup(root, $3->child->child->attribute);
-            if(val != cmpVal){
-                    printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
+        if(strcmp($1->child->name, "ID") == 0){
+            int val = symtab_lookup(root, $1->child->attribute);
+            int cmpVal = 0;
+            if(strcmp($3->child->name, "Exp") == 0){
+                if(strcmp($3->child->child->name, "ID") != 0){
+                    if(strcmp($3->child->child->name,"float") == 0 || strcmp($3->child->child->name,"int") == 0 || strcmp($3->child->child->name,"char") == 0 ){
+                        cmpVal = symtab_lookup(root, $3->child->child->attribute);
+                        if(val != cmpVal){
+                                printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
+                        }
+                    }
+                }
+                else{
+                    cmpVal = symtab_lookup(root, $3->child->child->attribute);
+                    if(val != cmpVal){
+                            printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
+                    }
+                }
             }
+            
         }
+        
 }
    | Exp AND Exp {$$=insert("Exp",3,$1,alloNodeC("&&","AND"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
    | Exp OR Exp {$$=insert("Exp",3,$1,alloNodeC("||","OR"),$3);@$ = @1;$$->lineNo=(@1).first_line;}
@@ -314,6 +339,7 @@ int valType(char * type){
     if(strcmp(type, "CHAR") == 0 || strcmp(type, "char") == 0){
         return 3;
     }
+    return 0;
 }
 int main(int argc, char **argv) {
     char *file_path;
