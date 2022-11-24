@@ -43,12 +43,19 @@ typedef struct FieldList
     struct FieldList *next;
 } FieldList;
 
+typedef struct ParaList
+{
+    struct Type type;
+    struct ParaList *next;
+} FieldList;
+
 typedef struct Info
 {
     Type type;
     Type return_type;
-    Type *parameter;
+    Type ParaList;
 } Info;
+
 
 /* symbol table entry, only used internally */
 typedef struct entry
