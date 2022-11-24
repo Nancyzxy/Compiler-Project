@@ -61,6 +61,7 @@ VAL_T symtab_lookup(symtab *self, char *key){
     {
         struct Info* info = malloc(sizeof(Info));
         memset(info, '\0', sizeof(Info));
+        info->a = -1;
         return *info;
     }
     if (strcmp(key,self->entry.key)==0)

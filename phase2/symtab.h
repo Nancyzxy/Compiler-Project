@@ -10,7 +10,7 @@
 
 typedef struct Type
 {
-    char name[32];
+    char* name;
     enum
     {
         PRIMITIVE,
@@ -38,7 +38,7 @@ typedef struct Array
 
 typedef struct FieldList
 {
-    char name[32];
+    char* name;
     struct Type *type;
     struct FieldList *next;
 } FieldList;
@@ -51,9 +51,10 @@ typedef struct ParaList
 
 typedef struct Info
 {
+    int a;//0 变量 1数组 2函数 3结构体
     struct Type *type;
     struct Type *return_type;
-    ParaList* ParaList;
+    struct ParaList* paraList;
 } Info;
 
 
