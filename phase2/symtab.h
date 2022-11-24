@@ -45,15 +45,15 @@ typedef struct FieldList
 
 typedef struct ParaList
 {
-    struct Type type;
+    struct Type *type;
     struct ParaList *next;
-} FieldList;
+} ParaList;
 
 typedef struct Info
 {
-    Type type;
-    Type return_type;
-    Type ParaList;
+    struct Type *type;
+    struct Type *return_type;
+    ParaList* ParaList;
 } Info;
 
 
