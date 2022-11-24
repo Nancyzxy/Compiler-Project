@@ -15,7 +15,6 @@
     node* alloNodeF(float a,char * Name);
     node* alloNodeC(char* a,char * Name);
     void printTree(node* root,int blank);
-    int valType(char * type);
 %}
 
 %union{
@@ -151,24 +150,6 @@ DefList: Def DefList {$$ = insert("DefList",2,$1,$2);@$ = @1;$$->lineNo=(@1).fir
        ;
 
 Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;
-        if(strcmp($2->child->child->child->name, "ID") == 0){
-            if(symtab_lookup(root, $2->child->child->child->attribute) != -1){
-            printf("Error Type 3 at Line %d: redefine variable: %s\n", (@1).first_line,$2->child->child->child->attribute);
-            }
-            else{
-                if(strcmp($1->child->name, "TYPE") == 0){
-                    symtab_insert(root, $2->child->child->child->attribute, valType(($1->child->attribute)));
-                    int val = valType(($1->child->attribute));
-                    int cmpVal = 0;
-                    if($2->child->child->next != NULL){
-                        if(strcmp($2->child->child->next->next->child->name,"Exp") == 0){
-                            if(strcmp($2->child->child->next->next->child->child->name, "ID") == 0){
-                            cmpVal = symtab_lookup(root, $2->child->child->next->next->child->child->attribute);
-                            if(val != cmpVal){
-                                printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
-                            }
-                        }
-                        }
                         
                         else{
                             cmpVal = valType($2->child->child->next->next->child->name);
@@ -329,18 +310,6 @@ node* insert(char * parent,int count, ...){
     return p;
 }
 
-int valType(char * type){
-    if(strcmp(type, "INT") == 0 || strcmp(type, "int") == 0){
-        return 1;
-    }
-    if(strcmp(type,"FLOAT") == 0 || strcmp(type,"float") == 0){
-        return 2;
-    }
-    if(strcmp(type, "CHAR") == 0 || strcmp(type, "char") == 0){
-        return 3;
-    }
-    return 0;
-}
 int main(int argc, char **argv) {
     char *file_path;
     freopen("out.txt","w",stdout);

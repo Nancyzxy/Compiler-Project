@@ -1,4 +1,4 @@
-#include "symtab_bt.h"
+#include "symtab.h"
 
 
 
@@ -59,7 +59,9 @@ int symtab_insert(symtab *self, char *key, VAL_T value){
 VAL_T symtab_lookup(symtab *self, char *key){
     if (!&self->entry || self==NULL)
     {
-        return -1;
+        struct Info* info = malloc(sizeof(Info));
+        memset(info, '\0', sizeof(Info));
+        return *info;
     }
     if (strcmp(key,self->entry.key)==0)
     {
@@ -126,4 +128,9 @@ int symtab_remove(symtab *self, char *key){
         self->entry = min->entry;  
         return 1;
     }
+}
+void entry_init(entry *self, char *key, VAL_T value)
+{
+    sprintf(self->key, "%s", key);
+    self->value = value;
 }

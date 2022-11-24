@@ -3,9 +3,9 @@ FLEX=flex
 BISON=bison
 splc:
 	@rm -rf bin/
-	@rm syntax.tab.c
-	@rm syntax.tab.h
-	@rm lex.yy.c
+	@rm syntax.tab.c -f
+	@rm syntax.tab.h -f
+	@rm lex.yy.c -f
 	@mkdir bin
 	$(BISON) -d -t syntax.y
 	$(FLEX) lex.l
