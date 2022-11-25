@@ -91,7 +91,7 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 23 "syntax.y" /* yacc.c:1909  */
+#line 26 "syntax.y" /* yacc.c:1909  */
 
     node* treeNode;
     int int_value;
