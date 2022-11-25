@@ -1,0 +1,4 @@
+Error type 6 at Line 4: left side in assignment is rvalue
+Error type 7 at Line 9: binary operation on non-number variables
+Error type 7 at Line 12: binary operation on non-number variables
+Error type 7 at Line 19: binary operation on non-number variables

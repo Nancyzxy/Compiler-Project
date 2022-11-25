@@ -1,0 +1,24 @@
+struct Car{
+    int cost;
+    float velocity;
+    int aa;
+    int aaa;
+    float aaaa;
+};
+struct Car{
+    int vmefifty;
+};
+
+int main(){
+    struct Car cars[14];
+    struct Car carb;
+    int a = 1;
+    int flag = 0;
+    cars[1].cost.cost = 15;
+    cars[2].cost = 425.6;
+    cars[2].velocity = 5.14;  
+    if(carb == cars[1].cost){
+        
+    }
+    return 0;
+}
