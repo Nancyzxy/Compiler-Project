@@ -1,0 +1,14 @@
+float inc(float n)
+{
+  return n;
+}
+int add(int b){
+  return b;
+}
+int test_2_r02()
+{
+  float k = 4.5;
+  int a = 0;
+  int r = add(a) + inc(k);
+  return a;
+}

@@ -90,7 +90,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                                     struct_type->name = cur->child->child->child->attribute;//struct中元素的类型
                                     // printf("%s\n", cur->child->child->next->name);//DecList
                                     if(cur->child->child->next->child->child->child->next != NULL){//struct中的数组名字,假设是一维数组
-                                        struct_element->name = cur->child->child->next->child->child->child->child->child->attribute;
+                                        struct_element->name = cur->child->child->next->child->child->child->child->attribute;
                                         struct_type->category = ARRAY;
                                     }else {
                                         struct_element->name = cur->child->child->next->child->child->child->attribute;

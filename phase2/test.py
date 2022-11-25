@@ -3,8 +3,6 @@ import re
 import subprocess
 
 
-DATA = pathlib.Path('test')
-
 def execute(file):
   out = subprocess.check_output(['bin/splc', file])
   return out.decode().strip()
@@ -15,7 +13,7 @@ def compare_result(output0,output1):
 
 
 def check_right():
-  data = DATA
+  data = pathlib.Path('test-ex')
   for spl in data.glob('*.spl'):
     spl = spl.__str__()
     execute(spl)
@@ -34,3 +32,4 @@ def check_our():
 
 print("right:")
 check_right()
+check_our()
