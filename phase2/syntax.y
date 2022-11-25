@@ -64,7 +64,71 @@ ExtDefList: ExtDef ExtDefList { $$ = insert("ExtDefList",2,$1,$2);@$ = @1;$$->li
           ;
 
 ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;}
-      | Specifier SEMI {$$ = insert("ExtDef",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;}
+      | Specifier SEMI {$$ = insert("ExtDef",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line; 
+      //specifier->structspecifier->STRUCT ID LC DefList RC
+            if(symtab_lookup(root, $1->child->child->next->attribute).a ==3){
+                printf("Error type 15 at Line %d: redefine struct: %s\n",(@1).first_line,$1->child->child->next->attribute);
+            }
+            //DefList->def->DecList->Dec->VarDec->ID | VarDec LB INT RB 
+            //插入结构体
+            else{
+                                struct Info* info = malloc(sizeof(Info));
+                                struct Type *type = malloc(sizeof(Type));
+                                info->a = 3;
+                                type->category = STRUCTURE;
+                                type->name = $1->child->child->next->attribute; //struct名字
+                                // printf("%s\n",type->name);
+                                struct FieldList *struct_element;
+                                if($1->child->child->next->next != NULL){//存在DefList
+                                    node *cur = $1->child->child->next->next->next; //DefList
+                                    // printf("%s\n",cur->name);
+                                    struct_element = malloc(sizeof(FieldList));
+                                    struct Type *struct_type = malloc(sizeof(Type));
+                                    struct_type->name = cur->child->child->child->attribute;//struct中元素的类型
+                                    // printf("%s\n", cur->child->child->next->name);//DecList
+                                    struct_type->category = PRIMITIVE;//?假设
+                                    if(cur->child->child->next->child->child->child->next != NULL){//struct中的数组名字,假设是一维数组
+                                        struct_element->name = cur->child->child->next->child->child->child->child->child->attribute;
+                                    }else {
+                                        struct_element->name = cur->child->child->next->child->child->child->attribute;
+                                    }
+                                    // printf("%s\n",struct_element->name); // id名字
+                                    struct_element->type = struct_type;
+                                    struct_element->next = NULL;
+                                    type->structure = struct_element;
+                                    // printf("%s\n",type->structure->name);
+                                    struct FieldList *curField = struct_element;
+                                    while(cur->next != NULL){
+                                        cur = cur->child->next;
+                                        // printf("%s\n",cur->name); // DefList
+                                        // printf("%s\n",cur->child->name);
+                                        struct Type *element_type = malloc(sizeof(Type));
+                                        element_type->name =  cur->child->child->child->attribute;
+                                        // printf("%s\n", element_type->name);
+                                        element_type->category = PRIMITIVE;
+                                        struct FieldList *field = malloc(sizeof(FieldList));
+                                        if(cur->child->child->next->child->child->child->next != NULL){//struct中的数组名字,假设是一维数组
+                                            field->name = cur->child->child->next->child->child->child->child->attribute;
+                                        }else {
+                                            field->name = cur->child->child->next->child->child->child->attribute;
+                                        }
+                                        // printf("%s\n",field->name);
+                                        field->next = NULL;
+                                        field->type = element_type;
+                                        
+                                        curField->next = field;
+                                        // printf("1: %s\n", curField->name);
+                                        curField = curField->next; 
+                                        // printf("2: %s\n", curField->name);
+                                    }
+                                }else {
+                                    struct_element = NULL;
+                                }
+                                info->type = type;
+                                // printf("%s\n",info->type->name);
+                                symtab_insert(root, $1->child->child->next->attribute, *info);
+            }  
+      }
       | Specifier FunDec CompSt {$$ = insert("ExtDef",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;
             if(symtab_lookup(root, $2->child->attribute).a != -1){printf("Error type 4 at Line %d: redefine function: %s\n",(@1).first_line,$2->child->attribute);}
             else{
@@ -166,7 +230,6 @@ ParamDec: Specifier VarDec {$$ = insert("ParamDec",2,$1,$2);@$ = @1;$$->lineNo=(
                                 val->a = 0;
                                 symtab_insert(root, $2->child->attribute, *val);
                             }
-                            // hello 结构体插在这里哦！
                     }
                 }
  };
@@ -212,6 +275,8 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
                                 type->name = $1->child->attribute;
                                 type->category = PRIMITIVE;
                                 val->type = type;
+                                val->return_type = NULL;
+                                val->paraList = NULL;
                                 val->a = 0;
                                 symtab_insert(root, $2->child->child->child->attribute, *val);
                                 Type *baseval = type;
@@ -221,10 +286,47 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
                                     if(compareType(baseval, cmpVal) == 0){
                                         printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
                                     }
-                     }
+                                }
+                            }else{//插入结构体的声明
+                            //DecList->Dec->VarDec->ID
+                                // printf("1");
+                                struct Info *info = malloc(sizeof(Info));
+                                struct Type *type = malloc(sizeof(Type));
+                                type->name = $1->child->child->next->attribute; //结构体名字
+                                type->category = STRUCTURE;
+                                info->type = type;
+                                info->a = 3;
+                                symtab_insert(root, $2->child->child->child->attribute, *info);
+                            }
+                        }
+                }else{
+                    if(symtab_lookup(root, $2->child->child->child->child->attribute).a != -1){//ExtDecList->VarDec->VarDec->ID
+                        printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,$2->child->child->child->child->attribute);
+                    }else{
+                        struct Info *val = malloc(sizeof(Info));
+                        struct Type *typehead = malloc(sizeof(Type));
+                        typehead->name = $1->child->attribute;// type类型
+                        typehead->category = ARRAY;
+                        struct Array *arr = malloc(sizeof(Array));
+                        arr->size =atoi($2->child->child->child->next->next->attribute); //int size
+                        arr->base = malloc(sizeof(Type));
+                        arr->base->name = $1->child->attribute;
+                        typehead->array = arr;
+                        val->a = 1; 
+                        val->type = typehead;
+                        val->return_type = NULL;
+                        val->paraList = NULL;
+                        symtab_insert(root, $2->child->child->child->child->attribute, *val);
+                        Type *baseval = typehead;
+                        Type *cmpVal;
+                        if($2->child->child->next != NULL){
+                            cmpVal = $2->child->child->next->next->type;
+                            if(compareType(baseval, cmpVal) == 0){
+                                printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
+                            }
+                        }
+                    }
                 }
-        }
-        }
 
 
 
@@ -364,15 +466,41 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
         if(symtab_lookup(root, $1).a == -1){printf("Error Type 2 at Line %d : function %s is used without definition\n", (@1).first_line,$1);}
    }
    | Exp LB Exp RB {$$=insert("Exp",4,$1,alloNodeC("[","LB"),$3,alloNodeC("]","RB"));@$ = @1;$$->lineNo=(@1).first_line; $$->lvalue=1;
-        // Info val = symtab_lookup(root,$1->child->attribute);
-        // if(val.type->category != ARRAY)
-        // {
-        //     printf("Error Type 10 at Line %d: applying indexing operator ([...]) on non-array type variables", (@1).first_line);
-        // }
-        // $$->type = $1->type->array->base; //跟数组有关
+        Info val = symtab_lookup(root,$1->child->attribute);
+        if(val.type->category != ARRAY)
+        {
+            printf("Error Type 10 at Line %d: applying indexing operator ([...]) on non-array type variables", (@1).first_line);
+        }   
+        else{
+            if(strcasecmp($3->type->name,"int")!=0){
+                printf("Error Type 12 at Line %d: array indexing with a non-integer type expression", (@1).first_line);
+            }
+            $$->type = $1->type->array->base; 
+        }
+    
    }
    | Exp DOT ID {$$=insert("Exp",3,$1,alloNodeC(".","DOT"),alloNodeC($3,"ID"));@$ = @1;$$->lineNo=(@1).first_line;$$->lvalue=1;
-        // $$->type = symtab_lookup(root,$$->child->next->next->attribute).type; //跟structure
+        //struct的类属性
+         if($1->type->category != STRUCTURE){
+             printf("Error Type 13 at Line %d: accessing with non-struct variable\n", (@1).first_line);
+         }else{
+         char *struct_name = $1->type->name;
+            // printf("%s\n",struct_name); 
+            struct Info info = symtab_lookup(root, struct_name);
+            struct FieldList *ele = info.type->structure;
+            int f = 0;
+            while(ele != NULL){
+            if(strcmp(ele->name,$$->child->next->next->attribute) == 0){
+                f = 1;
+                break;
+            }
+            ele = ele->next;
+            }
+            if(f == 0){
+                printf("Error type 14 at Line %d: no such member: %s\n",(@1).first_line, $$->child->next->next->attribute);
+            }
+        } 
+        $$->type = symtab_lookup(root,$$->child->next->next->attribute).type; //跟structure
    }
    | ID {$$=insert("Exp",1,alloNodeC($1,"ID"));@$ = @1;$$->lineNo=(@1).first_line; $$->lvalue=1;
         $$->type = symtab_lookup(root,$$->child->attribute).type;
