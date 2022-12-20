@@ -1,3 +1,9 @@
-Error type 3 at Line 2: redefine variable: redefined1
-Error type 5 at Line 2: unmatching type on both sides of assignment
-Error type 3 at Line 3: redefine variable: redefined2
+Error type 3 at Line 2: redefine variable: c
+Error type 15 at Line 2: redefine struct: x
+Error type 3 at Line 4: redefine variable: x
+Error type 3 at Line 7: redefine variable: c
+Error type 3 at Line 8: redefine variable: c
+Error type 3 at Line 11: redefine variable: x
+Error type 3 at Line 11: redefine variable: x
+Error type 3 at Line 14: redefine variable: x
+Error type 4 at Line 17: redefine function: main

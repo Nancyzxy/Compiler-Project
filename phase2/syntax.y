@@ -66,7 +66,70 @@ ExtDefList: ExtDef ExtDefList { $$ = insert("ExtDefList",2,$1,$2);@$ = @1;$$->li
           | {$$ = insert("ExtDefList",0);}
           ;
 
-ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;}
+ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;
+    node* pointer = $2->child;
+                while(1){
+                    if(strcmp(pointer->child->name, "ID") == 0){
+                        if(symtab_lookup(root, pointer->child->attribute).a != -1){
+                        printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,pointer->child->attribute);
+                        }
+                        else{
+                            //todo
+                            if(strcasecmp($1->child->name, "TYPE") == 0){
+                                struct Info *val = malloc(sizeof(Info));
+                                struct Type *type = malloc(sizeof(Type));
+                                type->name = $1->child->attribute;
+                                type->category = PRIMITIVE;
+                                val->type = type;
+                                val->return_type = NULL;
+                                val->paraList = NULL;
+                                val->a = 0;
+                                symtab_insert(root, pointer->child->attribute, *val);
+                            }else{//插入结构体的声明
+                                // printf("1");
+                                struct Info *info = malloc(sizeof(Info));
+                                struct Type *type = malloc(sizeof(Type));
+                                type->name = $1->child->child->next->attribute; //结构体名字
+                                type->category = STRUCTURE;
+                                info->type = type;
+                                info->a = 3;
+                                symtab_insert(root, pointer->child->attribute, *info);
+                            }
+                        }
+                }else{
+                    if(symtab_lookup(root, pointer->child->child->attribute).a != -1){//ExtDecList->VarDec->VarDec->ID
+                        printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,pointer->child->child->attribute);
+                    }else{
+                        struct Info *val = malloc(sizeof(Info));
+                        struct Type *typehead = malloc(sizeof(Type));
+                        struct Array *arr = malloc(sizeof(Array));
+                        arr->size =atoi(pointer->child->next->next->attribute); //int size
+                        if(strcasecmp($1->child->name, "type") == 0){
+                             typehead->name = $1->child->attribute;
+                             arr->base = malloc(sizeof(Type));
+                             arr->base->name = $1->child->attribute;
+                        }
+                        else{
+                            typehead->name = $1->child->child->next->attribute;
+                            arr->base = malloc(sizeof(Type));
+                            arr->base->category = STRUCTURE;
+                            arr->base->name = $1->child->child->next->attribute;
+                        }
+                       // type类型
+                        typehead->category = ARRAY;
+                        typehead->array = arr;
+                        val->a = 1; 
+                        val->type = typehead;
+                        val->return_type = NULL;
+                        val->paraList = NULL;
+                        symtab_insert(root, pointer->child->child->attribute, *val);
+                        
+                    }
+                }
+                if(pointer->next==NULL) break;
+                pointer = pointer->next->next->child;
+                }
+}
       | Specifier SEMI {$$ = insert("ExtDef",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line; 
       //specifier->structspecifier->STRUCT ID LC DefList RC
             if(symtab_lookup(root, $1->child->child->next->attribute).a ==3){
