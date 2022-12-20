@@ -13,7 +13,7 @@ def compare_result(output0,output1):
 
 
 def check_right():
-  data = pathlib.Path('test-ex')
+  data = pathlib.Path('project2_testcases/project2_testcases/github_test')
   for spl in data.glob('*.spl'):
     spl = spl.__str__()
     execute(spl)
@@ -22,7 +22,7 @@ def check_right():
     print(spl+": " + diff)
     
 def check_our():
-      data = pathlib.Path('test')
+      data = pathlib.Path('project2_testcases/project2_testcases/student_test')
       for spl in data.glob('*.spl'):
         spl = spl.__str__()
         execute(spl)
@@ -32,4 +32,4 @@ def check_our():
 
 print("right:")
 check_right()
-check_our()
+# check_our()

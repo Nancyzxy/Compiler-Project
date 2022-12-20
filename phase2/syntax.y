@@ -272,9 +272,11 @@ DefList: Def DefList {$$ = insert("DefList",2,$1,$2);@$ = @1;$$->lineNo=(@1).fir
        ;
 
 Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;
-                if(strcmp($2->child->child->child->name, "ID") == 0){
-                        if(symtab_lookup(root, $2->child->child->child->attribute).a != -1){
-                        printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,$2->child->child->child->attribute);
+                node* pointer = $2->child;
+                while(1){
+                    if(strcmp(pointer->child->child->name, "ID") == 0){
+                        if(symtab_lookup(root, pointer->child->child->attribute).a != -1){
+                        printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,pointer->child->child->attribute);
                         }
                         else{
                             //todo
@@ -287,11 +289,11 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
                                 val->return_type = NULL;
                                 val->paraList = NULL;
                                 val->a = 0;
-                                symtab_insert(root, $2->child->child->child->attribute, *val);
+                                symtab_insert(root, pointer->child->child->attribute, *val);
                                 Type *baseval = type;
                                 Type *cmpVal;
-                                if($2->child->child->next != NULL){
-                                    cmpVal = $2->child->child->next->next->type;
+                                if(pointer->child->next != NULL){
+                                    cmpVal = pointer->child->next->next->type;
                                     if(compareType(baseval, cmpVal) == 0){
                                         printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
                                     }
@@ -305,17 +307,17 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
                                 type->category = STRUCTURE;
                                 info->type = type;
                                 info->a = 3;
-                                symtab_insert(root, $2->child->child->child->attribute, *info);
+                                symtab_insert(root, pointer->child->child->attribute, *info);
                             }
                         }
                 }else{
-                    if(symtab_lookup(root, $2->child->child->child->child->attribute).a != -1){//ExtDecList->VarDec->VarDec->ID
-                        printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,$2->child->child->child->child->attribute);
+                    if(symtab_lookup(root, pointer->child->child->child->attribute).a != -1){//ExtDecList->VarDec->VarDec->ID
+                        printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,pointer->child->child->child->attribute);
                     }else{
                         struct Info *val = malloc(sizeof(Info));
                         struct Type *typehead = malloc(sizeof(Type));
                         struct Array *arr = malloc(sizeof(Array));
-                        arr->size =atoi($2->child->child->child->next->next->attribute); //int size
+                        arr->size =atoi(pointer->child->child->next->next->attribute); //int size
                         if(strcasecmp($1->child->name, "type") == 0){
                              typehead->name = $1->child->attribute;
                              arr->base = malloc(sizeof(Type));
@@ -334,20 +336,21 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
                         val->type = typehead;
                         val->return_type = NULL;
                         val->paraList = NULL;
-                        symtab_insert(root, $2->child->child->child->child->attribute, *val);
+                        symtab_insert(root, pointer->child->child->child->attribute, *val);
                         Type *baseval = typehead;
                         Type *cmpVal;
-                        if($2->child->child->next != NULL){
-                            cmpVal = $2->child->child->next->next->type;
+                        if(pointer->child->next != NULL){
+                            cmpVal = pointer->child->next->next->type;
                             if(compareType(baseval, cmpVal) == 0){
                                 printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
                             }
                         }
                     }
                 }
-
-
-
+                if(pointer->next==NULL) break;
+                pointer = pointer->next->next->child;
+                }
+                
 }
     |Specifier DecList error{flag=1; printf("Error type B at Line %d: Missing semicolon ';'\n",(@2).first_line);}
    ;
@@ -470,7 +473,10 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
         if(val.a!=-1){
             if(val.a == 2){
                 if(confirmArgsType($3,val.paraList)==0){
-                    printf("Error type 9 at Line %d: invalid argument number for compare, expect %d, got %d\n",(@1).first_line,cnt2,cnt1);
+                    if(cnt2==cnt1){
+                        printf("Error type 9 at Line %d: invalid argument type for compare\n",(@1).first_line);
+                    }
+                    else printf("Error type 9 at Line %d: invalid argument number for compare, expect %d, got %d\n",(@1).first_line,cnt2,cnt1);
                 } $$->type = val.return_type;
             }else {
                 $$->type = val.type;
