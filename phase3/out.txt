@@ -1,0 +1,10 @@
+FUNCTION add
+PARAM t1
+PARAM t2
+FUNCTION main
+READ t5
+READ t6
+ARG t5
+ARG t6
+t4 := CALL add
+WRITE t4

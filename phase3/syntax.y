@@ -12,8 +12,8 @@
     int cnt1=0;
     int cnt2=0;
     int line = 0;
-    int count1 = 0;
-    int count2 = 0;
+    int count1 = 1;
+    int count2 = 1;
     symtab* root;
     node* insert(char* parent,int count,...);
     void yyerror(const char*);
@@ -26,6 +26,8 @@
     int confirmArgsType(node* root,ParaList* parameters);
     char* new_place();
     char* new_label();
+    char* translate_Exp(node* Exp, char* place);
+    char* translate_Args(node* Args, int* arglist);
 %}
 
 %union{
@@ -37,7 +39,7 @@
 %token<int_value> INT 
 %token<string_value>FLOAT 
 %token<string_value>CHAR ID TYPE INCLUSION DEFINE
-%token<treeNode> STRUCT IF WHILE RETURN SEMI COMMA FOR
+%token<treeNode> STRUCT IF WHILE RETURN SEMI COMMA FOR READ WRITE
 %type <treeNode> Args Exp Dec DecList Def DefList Stmt StmtList CompSt ParamDec VarList FunDec VarDec StructSpecifier Specifier ExtDecList ExtDef ExtDefList Program Header Headers
 %nonassoc<treeNode> LOWER_ELSE
 %nonassoc<treeNode> ELSE
@@ -290,7 +292,27 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                 val->a = 2;
                 val->return_type = returnType;
                 val->paraList = paralist;
-                symtab_insert(root, $2->child->attribute, *val); 
+                symtab_insert(root, $2->child->attribute, *val);
+                printf("FUNCTION %s\n", $2->child->attribute);
+                if(strcasecmp($2->child->next->next->name,"RP") != 0){
+                    node* varList = $2->child->next->next;
+                    char* place = new_place();
+                    printf("PARAM %s\n", place);
+                    while(varList->child->next != NULL){
+                        place = new_place();
+                        printf("PARAM %s\n", place);
+                        varList = varList->child->next->next;
+                    }
+                }
+                node* stmtList = $3->child->next->next;
+                while(stmtList->child != NULL){
+                    if(strcasecmp(stmtList->child->child->name, "Exp") == 0){
+                        char* tp = new_place();
+                        printf("%s",translate_Exp(stmtList->child->child, tp));
+                    }
+                    stmtList = stmtList->child->next;
+                }
+                
             }  
     //    /******/
        char * returnType;
@@ -369,7 +391,8 @@ StmtList: Stmt StmtList  {$$ = insert("StmtList",2,$1,$2);@$ = @1;$$->lineNo=(@1
         |   {$$ = insert("StmtList",0);}
         ;
 
-Stmt: Exp SEMI {$$ = insert("Stmt",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;}
+Stmt: Exp SEMI {$$ = insert("Stmt",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;
+}
     | CompSt {$$ = insert("Stmt",1,$1);@$ = @1;$$->lineNo=(@1).first_line;}
     | RETURN Exp SEMI {$1 =alloNodeC("return","RETURN"); $1->lineNo=(@1).first_line; $$ = insert("Stmt",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;
     }
@@ -733,6 +756,8 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
         $$->type->name = "char";
         $$->type-> category = PRIMITIVE;
    }
+   | READ LP RP{$$=insert("Exp",3,alloNodeC("read","READ"),alloNodeC("(","LP"),alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
+   | WRITE LP Exp RP{$$=insert("Exp",4, alloNodeC("write","WRITE"), alloNodeC("(", "LP"), $3, alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
    | FAULT error {flag=1; printf("Error type A at Line %d: unknown lexeme %s\n",(@1).first_line,$1);}
    | ID LP Args error {flag=1; printf("Error type B at Line %d: Missing closing parenthesis ')'\n",(@3).first_line);}
    | Exp FAULT Exp error{flag=1; printf("Error type A at Line %d: unknown lexeme %s\n",(@2).first_line,$2);};
@@ -745,12 +770,77 @@ Args: Exp COMMA Args {$2= alloNodeC(",","COMMA"); $$ = insert("Args",3,$1,$2,$3)
 void yyerror(const char *s) {
     fprintf(stderr, "%s at line %d\n", s, yylineno);
 }
+char* translate_Exp(node* Exp, char* place){
+    if(strcasecmp(Exp->child->name, "read")==0){
+        char* buff = malloc(32);
+        sprintf(buff, "READ %s\n", place);
+        return buff;
+    }
+    if(strcasecmp(Exp->child->name, "write")==0){;
+        char* place = new_place();
+        char* buff = malloc(32);
+        sprintf(buff, "%sWRITE %s\n", translate_Exp(Exp->child->next->next, place), place);
+        return buff;
+    }
+    if(strcasecmp(Exp->child->name, "id") == 0){
+        if(strcasecmp(Exp->child->next->next->name, "RP") == 0){
+            Info function = symtab_lookup(root, Exp->child->attribute);
+            char* buff = malloc(32);
+            sprintf(buff, "%s := CALL %s\n", place, Exp->child->attribute);
+            return buff;
+        }
+        if(strcasecmp(Exp->child->next->next->name, "args") == 0){
+            Info function = symtab_lookup(root, Exp->child->attribute);
+            int arglist[10] = {0};
+            char* code1 = translate_Args(Exp->child->next->next, arglist);
+            //char* code1 = "hh";
+            char* code2 = malloc(64);
+            for(int i = 0; i < 10; i++){
+                if(arglist[i] != 0){
+                    sprintf(code2, "%sARG t%d\n", code2, arglist[i]);
+                }
+            }
+            char* buff = malloc(64);
+            sprintf(buff, "%s%s%s := CALL %s\n", code1, code2, place,Exp->child->attribute);
+            return buff;
+        }
+    }
+    return NULL;
+}
 
+char* translate_Args(node* Args, int* arglist){
+    if(Args->child->next == NULL){
+        char* tp = new_place();
+        char* code = translate_Exp(Args->child, tp);
+        for(int i = 0; i < 10; i++){
+            if(arglist[i] == 0){
+                arglist[i] = count1 - 1;
+                break;
+            }
+        }
+        return code;
+    }
+    else{
+        char* tp = new_place();
+        char* code1 = translate_Exp(Args->child, tp);
+        for(int i = 0; i < 10; i++){
+            if(arglist[i] == 0){
+                arglist[i] = count1 - 1;
+                break;
+            }
+        }
+        char* code2 = translate_Args(Args->child->next->next, arglist);
+        char* buff = malloc(64);
+        sprintf(buff, "%s%s", code1, code2);
+        return buff;
+    }
+    
+}
 char* new_place(){
-    char buff[10] = {0};
-    sprintf(buff,"%d",count1);
+    char* buff = malloc(32);
+    sprintf(buff,"t%d",count1);
     count1++;
-    return strcat("t",buff);
+    return buff;
 }
 
 
@@ -758,7 +848,7 @@ char* new_label(){
     char buff[10] = {0};
     sprintf(buff,"%d",count2);
     count2++;
-    return strcat("lable",buff);
+    return strcat(buff, "lable");
 }
 
 int confirmReturnType(node* root,char * returnType){
@@ -915,6 +1005,38 @@ int main(int argc, char **argv) {
     char *file_path;
     freopen("out.txt","w",stdout);
     root =  symtab_init();
+    struct Info *val = malloc(sizeof(Info));
+    struct Type *returnType = malloc(sizeof(Type));
+    returnType->name= "int";
+    returnType->category = PRIMITIVE;//todo
+    struct ParaList *paralist;
+    val->type = NULL;
+    paralist = NULL;
+    val->a = 2;
+    val->return_type = returnType;
+    val->paraList = paralist;
+    symtab_insert(root, "read", *val);
+
+    struct Info *val1 = malloc(sizeof(Info));
+    struct Type *returnType1 = malloc(sizeof(Type));
+    returnType1->name= "int";
+    returnType1->category = PRIMITIVE;//todo
+    ParaList *paralist1;
+    val1->type = NULL;
+
+    struct Type *para = malloc(sizeof(Type));
+    para->name = "int";
+    para->category = PRIMITIVE;//todo
+    paralist1 = malloc(sizeof(ParaList));
+    paralist1->type = para;
+    paralist1->next = NULL;
+    
+    val1->a = 2;
+    val1->return_type = returnType1;
+    val1->paraList = paralist1;
+    symtab_insert(root, "write", *val1);
+
+
     if(argc < 2){
         fprintf(stderr, "Usage: %s <file_path>\n", argv[0]);
         return EXIT_FAIL;

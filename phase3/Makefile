@@ -2,6 +2,10 @@ CC=gcc
 FLEX=flex
 BISON=bison
 splc:
+	@rm -rf bin/
+	@rm syntax.tab.c
+	@rm syntax.tab.h
+	@rm lex.yy.c
 	@mkdir bin
 	$(BISON) -d -t syntax.y
 	$(FLEX) lex.l

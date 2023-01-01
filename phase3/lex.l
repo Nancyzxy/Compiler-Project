@@ -42,7 +42,8 @@ hex {digit}|"a"|"b"|"c"|"d"|"e"|"f"|"A"|"B"|"C"|"D"|"E"|"F"
 "]" { return RB; }
 "{" { return LC; }
 "}" { return RC; }
-
+"read" {return READ;}
+"write" {return WRITE;}
 "for" {return FOR;}
 "//"[^\n]*\n { printf("single-line comment %s\n",yytext);}
 "/*"([^*]|\*+[^/*])*"*/" { printf("multi-line comment %s\n",yytext);}
