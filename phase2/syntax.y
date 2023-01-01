@@ -67,7 +67,7 @@ ExtDefList: ExtDef ExtDefList { $$ = insert("ExtDefList",2,$1,$2);@$ = @1;$$->li
           ;
 
 ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;
-    node* pointer = $2->child;
+    node* pointer = $2->child; // VarDec
                 while(1){
                     if(strcmp(pointer->child->name, "ID") == 0){
                         if(symtab_lookup(root, pointer->child->attribute).a != -1){
@@ -97,37 +97,71 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                             }
                         }
                 }else{
-                    if(symtab_lookup(root, pointer->child->child->attribute).a != -1){//ExtDecList->VarDec->VarDec->ID
-                        printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,pointer->child->child->attribute);
-                    }else{
-                        struct Info *val = malloc(sizeof(Info));
-                        struct Type *typehead = malloc(sizeof(Type));
-                        struct Array *arr = malloc(sizeof(Array));
-                        arr->size =atoi(pointer->child->next->next->attribute); //int size
-                        if(strcasecmp($1->child->name, "type") == 0){
-                             typehead->name = $1->child->attribute;
-                             arr->base = malloc(sizeof(Type));
-                             arr->base->name = $1->child->attribute;
-                        }
-                        else{
-                            typehead->name = $1->child->child->next->attribute;
-                            arr->base = malloc(sizeof(Type));
-                            arr->base->category = STRUCTURE;
-                            arr->base->name = $1->child->child->next->attribute;
-                        }
-                       // type类型
-                        typehead->category = ARRAY;
-                        typehead->array = arr;
-                        val->a = 1; 
-                        val->type = typehead;
-                        val->return_type = NULL;
-                        val->paraList = NULL;
-                        symtab_insert(root, pointer->child->child->attribute, *val);
-                        
-                    }
+                        //VarDec LB INT RB
+                        node *pp = pointer->child; //VarDeC或者ID
+                        // printf("%s\n", pp->attribute);
+                            if(strcmp(pp->child->name, "ID") == 0){//一维数组
+                                if(symtab_lookup(root, pp->child->attribute).a != -1){//是否重复ID
+                                    printf("Error type 3 at Line %d: redefine variable: %s 111\n", (@1).first_line,pp->child->attribute);
+                                }else{
+                                    struct Info *val = malloc(sizeof(Info));
+                                    struct Type *typehead = malloc(sizeof(Type));
+                                    struct Array *arr = malloc(sizeof(Array));
+                                    arr->size = atoi(pp->next->next->attribute); //int值
+                                    if(strcasecmp($1->child->name, "type") == 0){
+                                        typehead->name = $1->child->attribute;
+                                        arr->base = malloc(sizeof(Type));
+                                        arr->base->name = $1->child->attribute;
+                                    }
+                                    else{//结构体数组
+                                        typehead->name = $1->child->child->next->attribute;
+                                        arr->base = malloc(sizeof(Type));
+                                        arr->base->category = STRUCTURE;
+                                        arr->base->name = $1->child->child->next->attribute;
+                                    }
+                                    typehead->category = ARRAY;
+                                    typehead->array = arr;
+                                    val->a = 1; 
+                                    val->type = typehead;
+                                    val->return_type = NULL;
+                                    val->paraList = NULL;
+                                    symtab_insert(root, pp->child->attribute, *val);
+                                }    
+                            }else {//二维数组
+                                node *pid = pp->child; //ID
+                                if(symtab_lookup(root, pid->child->attribute).a != -1){//是否重复ID
+                                    printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,pp->child->child->attribute);
+                                }else{
+                                    //一维结构
+                                    struct Info *val = malloc(sizeof(Info));
+                                    struct Type *typehead = malloc(sizeof(Type));
+                                    struct Array *arr = malloc(sizeof(Array));
+                                    arr->size_col = atoi(pp->next->next->attribute); //int 列值
+                                    arr->size = atoi(pp->child->next->next->attribute);//行值
+                                    if(strcasecmp($1->child->name, "type") == 0){
+                                        typehead->name = $1->child->attribute;
+                                        arr->base = malloc(sizeof(Type));
+                                        arr->base->name = $1->child->attribute;
+                                    }
+                                    else{//结构体数组
+                                        typehead->name = $1->child->child->next->attribute;
+                                        arr->base = malloc(sizeof(Type));
+                                        arr->base->category = STRUCTURE;
+                                        arr->base->name = $1->child->child->next->attribute;
+                                    }
+                                    typehead->category = ARRAY;
+                                    typehead->array = arr;
+                                    val->a = 1; 
+                                    val->type = typehead;
+                                    val->return_type = NULL;
+                                    val->paraList = NULL;
+                                    symtab_insert(root, pp->child->child->attribute, *val);
+                                }
+                                
+                            }
                 }
                 if(pointer->next==NULL) break;
-                pointer = pointer->next->next->child;
+                pointer = pointer->next->next->child; //到下一个VarDec
                 }
 }
       | Specifier SEMI {$$ = insert("ExtDef",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line; 
@@ -153,7 +187,15 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                                     struct_type->name = cur->child->child->child->attribute;//struct中元素的类型
                                     // printf("%s\n", cur->child->child->next->name);//DecList
                                     if(cur->child->child->next->child->child->child->next != NULL){//struct中的数组名字,假设是一维数组
-                                        struct_element->name = cur->child->child->next->child->child->child->child->attribute;
+                                        node *vardec = cur->child->child->next->child->child->child;
+                                        if(vardec->child->next != NULL){
+                                            //结构体中二维数组
+                                            struct_element->name = vardec->child->child->attribute;
+                                            // printf("%s\n",struct_element->name);
+                                        }else{
+                                            struct_element->name = vardec->child->attribute;
+                                            // printf("%s\n",struct_element->name);
+                                        }
                                         struct_type->category = ARRAY;
                                     }else {
                                         struct_element->name = cur->child->child->next->child->child->child->attribute;
@@ -177,7 +219,12 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                                         // printf("%s\n", element_type->name);
                                         struct FieldList *field = malloc(sizeof(FieldList));
                                         if(cur->child->child->next->child->child->child->next != NULL){//struct中的数组名字,假设是一维数组
-                                            field->name = cur->child->child->next->child->child->child->child->attribute;
+                                            node *var = cur->child->child->next->child->child->child;
+                                            if(var->child->next != NULL){
+                                                field->name = var->child->child->attribute;
+                                            }else {
+                                                field->name = var->child->attribute;
+                                            }
                                             element_type->category = ARRAY;
                                         }else {
                                             field->name = cur->child->child->next->child->child->child->attribute;
@@ -374,41 +421,87 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
                             }
                         }
                 }else{
-                    if(symtab_lookup(root, pointer->child->child->child->attribute).a != -1){//ExtDecList->VarDec->VarDec->ID
-                        printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,pointer->child->child->child->attribute);
-                    }else{
-                        struct Info *val = malloc(sizeof(Info));
-                        struct Type *typehead = malloc(sizeof(Type));
-                        struct Array *arr = malloc(sizeof(Array));
-                        arr->size =atoi(pointer->child->child->next->next->attribute); //int size
-                        if(strcasecmp($1->child->name, "type") == 0){
-                             typehead->name = $1->child->attribute;
-                             arr->base = malloc(sizeof(Type));
-                             arr->base->name = $1->child->attribute;
-                        }
-                        else{
-                            typehead->name = $1->child->child->next->attribute;
-                            arr->base = malloc(sizeof(Type));
-                            arr->base->category = STRUCTURE;
-                            arr->base->name = $1->child->child->next->attribute;
-                        }
-                       // type类型
-                        typehead->category = ARRAY;
-                        typehead->array = arr;
-                        val->a = 1; 
-                        val->type = typehead;
-                        val->return_type = NULL;
-                        val->paraList = NULL;
-                        symtab_insert(root, pointer->child->child->child->attribute, *val);
-                        Type *baseval = typehead;
-                        Type *cmpVal;
-                        if(pointer->child->next != NULL){
-                            cmpVal = pointer->child->next->next->type;
-                            if(compareType(baseval, cmpVal) == 0){
-                                printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
+                    //数组
+                    
+                    //首先判断是否为二维
+                    if(pointer->child->child->child->next != NULL){
+                        //二维
+                        // printf("%s\n",pointer->child->child->child->child->attribute);
+                        if(symtab_lookup(root, pointer->child->child->child->child->attribute).a != -1){//ExtDecList->VarDec->VarDec->ID
+                            printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,pointer->child->child->child->child->attribute);
+                        }else{
+                            struct Info *val = malloc(sizeof(Info));
+                            struct Type *typehead = malloc(sizeof(Type));
+                            struct Array *arr = malloc(sizeof(Array));
+                            arr->size_col =atoi(pointer->child->child->next->next->attribute); //int col size
+                            arr->size = atoi(pointer->child->child->child->next->next->attribute);
+                            if(strcasecmp($1->child->name, "type") == 0){
+                                typehead->name = $1->child->attribute;
+                                arr->base = malloc(sizeof(Type));
+                                arr->base->name = $1->child->attribute;
+                            }
+                            else{
+                                typehead->name = $1->child->child->next->attribute;
+                                arr->base = malloc(sizeof(Type));
+                                arr->base->category = STRUCTURE;
+                                arr->base->name = $1->child->child->next->attribute;
+                            }
+                        // type类型
+                            typehead->category = ARRAY;
+                            typehead->array = arr;
+                            val->a = 1; 
+                            val->type = typehead;
+                            val->return_type = NULL;
+                            val->paraList = NULL;
+                            symtab_insert(root, pointer->child->child->child->child->attribute, *val);
+                            Type *baseval = typehead;
+                            Type *cmpVal;
+                            if(pointer->child->next != NULL){
+                                cmpVal = pointer->child->next->next->type;
+                                if(compareType(baseval, cmpVal) == 0){
+                                    printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
+                                }
                             }
                         }
+                    }else{//一维
+                        if(symtab_lookup(root, pointer->child->child->child->attribute).a != -1){//ExtDecList->VarDec->VarDec->ID
+                            printf("Error type 3 at Line %d: redefine variable: %s \n", (@1).first_line,pointer->child->child->child->attribute);
+                        }else{
+                            struct Info *val = malloc(sizeof(Info));
+                            struct Type *typehead = malloc(sizeof(Type));
+                            struct Array *arr = malloc(sizeof(Array));
+                            arr->size =atoi(pointer->child->child->next->next->attribute); //int size
+                            if(strcasecmp($1->child->name, "type") == 0){
+                                typehead->name = $1->child->attribute;
+                                arr->base = malloc(sizeof(Type));
+                                arr->base->name = $1->child->attribute;
+                            }
+                            else{
+                                typehead->name = $1->child->child->next->attribute;
+                                arr->base = malloc(sizeof(Type));
+                                arr->base->category = STRUCTURE;
+                                arr->base->name = $1->child->child->next->attribute;
+                            }
+                        // type类型
+                            typehead->category = ARRAY;
+                            typehead->array = arr;
+                            val->a = 1; 
+                            val->type = typehead;
+                            val->return_type = NULL;
+                            val->paraList = NULL;
+                            symtab_insert(root, pointer->child->child->child->attribute, *val);
+                            Type *baseval = typehead;
+                            Type *cmpVal;
+                            if(pointer->child->next != NULL){
+                                cmpVal = pointer->child->next->next->type;
+                                if(compareType(baseval, cmpVal) == 0){
+                                    printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
+                                }
+                            }
                     }
+                        
+                    }
+                    
                 }
                 if(pointer->next==NULL) break;
                 pointer = pointer->next->next->child;
@@ -565,7 +658,13 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
    | Exp LB Exp RB {$$=insert("Exp",4,$1,alloNodeC("[","LB"),$3,alloNodeC("]","RB"));@$ = @1;$$->lineNo=(@1).first_line; $$->lvalue=1;
         Info val;
         if(strcasecmp($1->child->name, "exp") == 0){
-            val = symtab_lookup(root,$1->child->next->next->attribute);
+            if($1->child->child != NULL){
+                //二维数组
+                // printf("%s\n",$1->child->child->attribute);
+                val = symtab_lookup(root, $1->child->child->attribute);
+            }else{
+                val = symtab_lookup(root,$1->child->next->next->attribute);
+            }
         }
         else{
             val = symtab_lookup(root,$1->child->attribute);
@@ -576,9 +675,13 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
         }   
         else{
             if(strcasecmp($3->type->name,"int")!=0){
-                printf("Error type 12 at Line %d: indexing by non-integer", (@1).first_line);
+                printf("Error type 12 at Line %d: indexing by non-integer\n", (@1).first_line);
             }
-            $$->type = $1->type->array->base; 
+            if($1->child->child != NULL){
+                $$->type = $1->child->type->array->base;
+            }else{
+                $$->type = $1->type->array->base; 
+            }
         }
    }
    | Exp DOT ID {$$=insert("Exp",3,$1,alloNodeC(".","DOT"),alloNodeC($3,"ID"));@$ = @1;$$->lineNo=(@1).first_line;$$->lvalue=1;

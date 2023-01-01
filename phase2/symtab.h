@@ -34,6 +34,7 @@ typedef struct Array
 {
     struct Type *base;
     int size;
+    int size_col;
 } Array;
 
 typedef struct FieldList
