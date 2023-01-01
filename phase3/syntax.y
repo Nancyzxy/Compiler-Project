@@ -3,6 +3,7 @@
     #include "node.h"
     #include <stdarg.h>
     #include <stdio.h>
+    #include <stdlib.h>
     #include <string.h>
     #include"symtab.c"
     #define EXIT_OK 0
@@ -11,6 +12,8 @@
     int cnt1=0;
     int cnt2=0;
     int line = 0;
+    int count1 = 0;
+    int count2 = 0;
     symtab* root;
     node* insert(char* parent,int count,...);
     void yyerror(const char*);
@@ -21,6 +24,8 @@
     int compareType(Type* type1, Type* type2);
     int confirmReturnType(node* root,char * returnType);
     int confirmArgsType(node* root,ParaList* parameters);
+    char* new_place();
+    char* new_label();
 %}
 
 %union{
@@ -740,6 +745,22 @@ Args: Exp COMMA Args {$2= alloNodeC(",","COMMA"); $$ = insert("Args",3,$1,$2,$3)
 void yyerror(const char *s) {
     fprintf(stderr, "%s at line %d\n", s, yylineno);
 }
+
+char* new_place(){
+    char buff[10] = {0};
+    sprintf(buff,"%d",count1);
+    count1++;
+    return strcat("t",buff);
+}
+
+
+char* new_label(){
+    char buff[10] = {0};
+    sprintf(buff,"%d",count2);
+    count2++;
+    return strcat("lable",buff);
+}
+
 int confirmReturnType(node* root,char * returnType){
     int re = 1;
     if(root->child!=NULL){
