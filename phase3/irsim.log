@@ -1,0 +1,23 @@
+[DEBUG] 2023-01-01 19:41:22,784 (irsim.py 620): Parsed arguments: {'irpath': 'sample/test01.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-01 19:41:22,787 (irsim.py 567): File loaded successfully
+[ERROR] 2023-01-01 19:42:00,215 (irsim.py 581): An error occurred at line 2: Illegal memory access
+[DEBUG] 2023-01-01 19:42:48,031 (irsim.py 620): Parsed arguments: {'irpath': 'sample/test01.ir', 'inputs': '1', 'logpath': 'irsim.log'}
+[INFO] 2023-01-01 19:42:48,033 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-01 19:42:57,824 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-01 19:42:57,824 (irsim.py 567): Total instructions = 10
+[ERROR] 2023-01-01 19:42:58,849 (irsim.py 581): An error occurred at line 2: Illegal memory access
+[ERROR] 2023-01-01 19:42:59,802 (irsim.py 581): An error occurred at line 2: Illegal memory access
+[DEBUG] 2023-01-01 19:43:34,390 (irsim.py 620): Parsed arguments: {'irpath': 'sample/test01.ir', 'inputs': '1', 'logpath': 'irsim.log'}
+[INFO] 2023-01-01 19:43:34,392 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-01 19:43:35,598 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-01 19:43:35,598 (irsim.py 567): Total instructions = 10
+[DEBUG] 2023-01-01 21:42:42,861 (irsim.py 620): Parsed arguments: {'irpath': 'sample/test01.ir', 'inputs': '1', 'logpath': 'irsim.log'}
+[INFO] 2023-01-01 21:42:42,864 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-01 21:42:49,086 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-01 21:42:49,087 (irsim.py 567): Total instructions = 10
+[DEBUG] 2023-01-01 21:42:59,013 (irsim.py 620): Parsed arguments: {'irpath': 'sample/test01.ir', 'inputs': '1', 'logpath': 'irsim.log'}
+[INFO] 2023-01-01 21:42:59,016 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-01 21:43:03,164 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-01 21:43:03,164 (irsim.py 567): Total instructions = 10
+[ERROR] 2023-01-01 21:43:03,496 (irsim.py 581): An error occurred at line 2: Illegal memory access
+[ERROR] 2023-01-01 21:43:03,832 (irsim.py 581): An error occurred at line 2: Illegal memory access
