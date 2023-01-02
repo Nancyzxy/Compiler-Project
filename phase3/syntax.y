@@ -80,7 +80,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
     node* pointer = $2->child; // VarDec
                 while(1){
                     if(strcmp(pointer->child->name, "ID") == 0){
-                        if(symtab_lookup(root, pointer->child->attribute).a != -1){
+                        if(symtab_lookup(root, pointer->child->attribute)->a != -1){
                         printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,pointer->child->attribute);
                         }
                         else{
@@ -113,7 +113,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                         node *pp = pointer->child; //VarDeC或者ID
                         // printf("%s\n", pp->attribute);
                             if(strcmp(pp->child->name, "ID") == 0){//一维数组
-                                if(symtab_lookup(root, pp->child->attribute).a != -1){//是否重复ID
+                                if(symtab_lookup(root, pp->child->attribute)->a != -1){//是否重复ID
                                     printf("Error type 3 at Line %d: redefine variable: %s 111\n", (@1).first_line,pp->child->attribute);
                                 }else{
                                     struct Info *val = malloc(sizeof(Info));
@@ -142,7 +142,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                                 }    
                             }else {//二维数组
                                 node *pid = pp->child; //ID
-                                if(symtab_lookup(root, pid->child->attribute).a != -1){//是否重复ID
+                                if(symtab_lookup(root, pid->child->attribute)->a != -1){//是否重复ID
                                     printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,pp->child->child->attribute);
                                 }else{
                                     //一维结构
@@ -180,7 +180,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
 }
       | Specifier SEMI {$$ = insert("ExtDef",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line; 
       //specifier->structspecifier->STRUCT ID LC DefList RC
-            if(symtab_lookup(root, $1->child->child->next->attribute).a ==3){
+            if(symtab_lookup(root, $1->child->child->next->attribute)->a ==3){
                 printf("Error type 15 at Line %d: redefine struct: %s\n",(@1).first_line,$1->child->child->next->attribute);
             }
             //DefList->def->DecList->Dec->VarDec->ID | VarDec LB INT RB 
@@ -267,7 +267,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
             }  
       }
       | Specifier FunDec CompSt {$$ = insert("ExtDef",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;
-            if(symtab_lookup(root, $2->child->attribute).a != -1){printf("Error type 4 at Line %d: redefine function: %s\n",(@1).first_line,$2->child->attribute);}
+            if(symtab_lookup(root, $2->child->attribute)->a != -1){printf("Error type 4 at Line %d: redefine function: %s\n",(@1).first_line,$2->child->attribute);}
             else{
               struct Info *val = malloc(sizeof(Info));
               struct Type *returnType = malloc(sizeof(Type));
@@ -377,7 +377,7 @@ VarList: ParamDec COMMA VarList {$$ = insert("VarList",3,$1,alloNodeC(",","COMMA
 
 ParamDec: Specifier VarDec {$$ = insert("ParamDec",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;
                 if(strcmp($2->child->name, "ID") == 0){
-                    if(symtab_lookup(root, $2->child->attribute).a != -1){
+                    if(symtab_lookup(root, $2->child->attribute)->a != -1){
                     printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,$2->child->attribute);
                     }
                     else{
@@ -429,7 +429,7 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
                 node* pointer = $2->child;
                 while(1){
                     if(strcmp(pointer->child->child->name, "ID") == 0){
-                        if(symtab_lookup(root, pointer->child->child->attribute).a != -1){
+                        if(symtab_lookup(root, pointer->child->child->attribute)->a != -1){
                         printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,pointer->child->child->attribute);
                         }
                         else{
@@ -473,7 +473,7 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
                     if(pointer->child->child->child->next != NULL){
                         //二维
                         // printf("%s\n",pointer->child->child->child->child->attribute);
-                        if(symtab_lookup(root, pointer->child->child->child->child->attribute).a != -1){//ExtDecList->VarDec->VarDec->ID
+                        if(symtab_lookup(root, pointer->child->child->child->child->attribute)->a != -1){//ExtDecList->VarDec->VarDec->ID
                             printf("Error type 3 at Line %d: redefine variable: %s\n", (@1).first_line,pointer->child->child->child->child->attribute);
                         }else{
                             struct Info *val = malloc(sizeof(Info));
@@ -513,7 +513,7 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
 
                         }
                     }else{//一维
-                        if(symtab_lookup(root, pointer->child->child->child->attribute).a != -1){//ExtDecList->VarDec->VarDec->ID
+                        if(symtab_lookup(root, pointer->child->child->child->attribute)->a != -1){//ExtDecList->VarDec->VarDec->ID
                             printf("Error type 3 at Line %d: redefine variable: %s \n", (@1).first_line,pointer->child->child->child->attribute);
                         }else{
                             struct Info *val = malloc(sizeof(Info));
@@ -676,29 +676,29 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
         $$->type = $2->type;
    }
    | ID LP Args RP {$$=insert("Exp",4,alloNodeC($1,"ID"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;
-        Info val =symtab_lookup(root,$$->child->attribute);
-        if(val.a!=-1){
-            if(val.a == 2){
-                if(confirmArgsType($3,val.paraList)==0){
+        Info* val =symtab_lookup(root,$$->child->attribute);
+        if(val->a!=-1){
+            if(val->a == 2){
+                if(confirmArgsType($3,val->paraList)==0){
                     if(cnt2==cnt1){
                         printf("Error type 9 at Line %d: invalid argument type for compare\n",(@1).first_line);
                     }
                     else printf("Error type 9 at Line %d: invalid argument number for compare, expect %d, got %d\n",(@1).first_line,cnt2,cnt1);
-                } $$->type = val.return_type;
+                } $$->type = val->return_type;
             }else {
-                $$->type = val.type;
+                $$->type = val->type;
                 printf("Error type 11 at Line %d: invoking non-function variable: %s\n", (@1).first_line, $1);
             }
         }else printf("Error type 2 at Line %d: undefined function: %s\n", (@1).first_line,$1);
         
    }
    | ID LP RP {$$=insert("Exp",3,alloNodeC($1,"ID"),alloNodeC("(","LP"),alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;
-        Info val = symtab_lookup(root,$$->child->attribute);
-        if(val.a!=-1){
-            if(val.a==2){
-                if(val.paraList!=NULL){
+        Info* val = symtab_lookup(root,$$->child->attribute);
+        if(val->a!=-1){
+            if(val->a==2){
+                if(val->paraList!=NULL){
                     printf("Error type 9 at Line %d: a function's arguments mismatch the declared parameters",(@1).first_line);
-                }else $$->type = val.return_type;
+                }else $$->type = val->return_type;
             }else {
                 printf("Error type 11 at Line %d: invoking non-function variable: %s\n", (@1).first_line, $1);
             }
@@ -707,7 +707,7 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
             printf("Error type 2 at Line %d : function %s is used without definition\n", (@1).first_line,$1);}
    }
    | Exp LB Exp RB {$$=insert("Exp",4,$1,alloNodeC("[","LB"),$3,alloNodeC("]","RB"));@$ = @1;$$->lineNo=(@1).first_line; $$->lvalue=1;
-        Info val;
+        Info* val;
         if(strcasecmp($1->child->name, "exp") == 0){
             if($1->child->child != NULL){
                 //二维数组
@@ -720,7 +720,7 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
         else{
             val = symtab_lookup(root,$1->child->attribute);
         } 
-        if(val.type->category != ARRAY)
+        if(val->type->category != ARRAY)
         {
             printf("Error type 10 at Line %d: indexing on non-array variable\n", (@1).first_line);
         }   
@@ -742,8 +742,8 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
          }else{
          char *struct_name = $1->type->name;
             // printf("%s\n",struct_name); 
-            struct Info info = symtab_lookup(root, struct_name);
-            struct FieldList *ele = info.type->structure;
+            struct Info* info = symtab_lookup(root, struct_name);
+            struct FieldList *ele = info->type->structure;
             int f = 0;
             while(ele != NULL){
             if(strcmp(ele->name,$$->child->next->next->attribute) == 0){
@@ -756,11 +756,11 @@ Exp: Exp ASSIGN Exp {$2 = alloNodeC("=","ASSIGN");$$=insert("Exp",3,$1,$2,$3);@$
                 printf("Error type 14 at Line %d: no such member: %s\n",(@1).first_line, $$->child->next->next->attribute);
             }
         } 
-        $$->type = symtab_lookup(root,$$->child->next->next->attribute).type; 
+        $$->type = symtab_lookup(root,$$->child->next->next->attribute)->type; 
    }
    | ID {$$=insert("Exp",1,alloNodeC($1,"ID"));@$ = @1;$$->lineNo=(@1).first_line; $$->lvalue=1;
-        $$->type = symtab_lookup(root,$$->child->attribute).type;
-        if(symtab_lookup(root, $$->child->attribute).a == -1){
+        $$->type = symtab_lookup(root,$$->child->attribute)->type;
+        if(symtab_lookup(root, $$->child->attribute)->a == -1){
             printf("Error type 1 at Line %d: undefined variable: %s\n", (@1).first_line,$1);
         }
    }
@@ -799,27 +799,39 @@ char* translate_def(node* def){
     if(strcasecmp(def->child->child->name, "type") == 0){
         while(decList->child->next != NULL){
             node* dec = decList->child;
-            if(dec->child->next == NULL){
+            if(dec->child->next == NULL){//assign
                 node* varDec = dec->child;
-                if(strcasecmp(varDec->child->name, "vardec") == 0){
+                if(strcasecmp(varDec->child->name, "vardec") == 0){//array
                     while(strcasecmp(varDec->child->name, "vardec") == 0){
-                        varDec = varDec->child;
+                        varDec = varDec->child; //找到array name
                     }
-                    Info arr = symtab_lookup(root, varDec->child->attribute);
+                    Info* arr = symtab_lookup(root, varDec->child->attribute);
                     int size = 0;
-                    if(arr.type->array->size_col == -1){
-                        size = arr.type->array->size * 4;
+                    if(arr->type->array->size_col == -1){
+                        size = arr->type->array->size * 4;
                     }
                     else {
-                       size = arr.type->array->size * arr.type->array->size_col * 4; 
+                       size = arr->type->array->size * arr->type->array->size_col * 4; 
                     }
                     char* tp = new_place();
-                    arr.t = count1 - 1;
+                    arr->t = count1 - 1;
                     sprintf(code, "%sDEC %s %d\n", code, tp, size);
+                }else{
+                    //int n
+                    Info* val = symtab_lookup(root,varDec->child->attribute);
+                    char* tp = new_place();
+                    val->t = count1-1;
                 }
             }
             else{
-                Info id = symtab_lookup(root, dec->child->child->attribute);
+                Info* id = symtab_lookup(root, dec->child->child->attribute);
+                char* tp = new_place();
+                id->t = count1-1;
+                tp = new_place();
+                char* code1 = translate_Exp(dec->child->next->next, tp);
+                char* code2 = malloc(64);
+                sprintf(code2, "t%d := %s\n", id->t, tp);
+                sprintf(code, "%s%s",code1,code2);
             }
             decList = decList->child->next->next;
         }
@@ -830,18 +842,22 @@ char* translate_def(node* def){
                 while(strcasecmp(varDec->child->name, "vardec") == 0){
                     varDec = varDec->child;
                 }
-                Info arr = symtab_lookup(root, varDec->child->attribute);
+                Info* arr = symtab_lookup(root, varDec->child->attribute);
                 int size = 0;
-                if(arr.type->array->size_col == -1){
-                    size = arr.type->array->size * 4;
+                if(arr->type->array->size_col == -1){
+                    size = arr->type->array->size * 4;
                 }
                 else {
-                    size = arr.type->array->size * arr.type->array->size_col * 4; 
+                    size = arr->type->array->size * arr->type->array->size_col * 4; 
                 }
                 char* tp = new_place();
-                arr.t = count1 - 1;
+                arr->t = count1 - 1;
                 char* buff = malloc(1024);
                 sprintf(code, "%sDEC %s %d\n", code, tp, size);
+            }else{
+                Info* val = symtab_lookup(root,varDec->child->attribute);
+                char* tp = new_place();
+                val->t = count1-1;
             }
         }
         }
@@ -1028,25 +1044,21 @@ char* translate_Exp(node* Exp, char* place){
     }
     if(strcasecmp(Exp->child->name, "id") == 0){
         if(Exp->child->next == NULL){
-            Info id = symtab_lookup(root, Exp->child->attribute);
+            Info* id = symtab_lookup(root, Exp->child->attribute);
             char* buff = malloc(1024);
-            if(id.t == -1){
-                id.t = count1 - 1;
-                sprintf(buff, "%s := t%d\n", place, id.t);
-            }
-            else{
-                sprintf(buff, "t%d", id.t);
-            }
+            if(id->t == -1){
+                id->t = count1 - 1;  
+            }sprintf(buff, "%s := t%d\n", place, id->t);
             return buff;
         }
         if(strcasecmp(Exp->child->next->next->name, "RP") == 0){
-            Info function = symtab_lookup(root, Exp->child->attribute);
+            Info* function = symtab_lookup(root, Exp->child->attribute);
             char* buff = malloc(32);
             sprintf(buff, "%s := CALL %s\n", place, Exp->child->attribute);
             return buff;
         }
         if(strcasecmp(Exp->child->next->next->name, "args") == 0){
-            Info function = symtab_lookup(root, Exp->child->attribute);
+            Info* function = symtab_lookup(root, Exp->child->attribute);
             int arglist[10] = {0};
             char* code1 = translate_Args(Exp->child->next->next, arglist);
             //char* code1 = "hh";
@@ -1061,8 +1073,81 @@ char* translate_Exp(node* Exp, char* place){
             return buff;
         }
     }
-    if(strcasecmp(Exp->child->next->name, "LB") == 0){
 
+
+    if(strcasecmp(Exp->child->name, "int") == 0){
+        char* buff = malloc(32);
+        sprintf(buff, "%s := #%s\n", place, Exp->child->attribute);
+        return buff;
+    }
+    if(strcasecmp(Exp->child->next->name, "assign") == 0){
+        Info* exp1 = symtab_lookup(root, Exp->child->child->attribute);
+        char *buff = malloc(1024); //ID
+        char* tp = new_place();
+        char* code1 = translate_Exp(Exp->child->next->next, tp);
+        char* code2 = malloc(64);
+        sprintf(code2, "t%d := %s\n", exp1->t, tp);
+        // char* code3 = malloc(64);
+        // sprintf(code3, "%s := t%d\n", place, exp1->t);
+        sprintf(buff, "%s%s",code1,code2);
+        return buff;
+        
+    }
+    if(strcasecmp(Exp->child->next->name, "plus") == 0){
+        char *t1 = new_place();
+        char *t2 = new_place();
+        char *code1 = translate_Exp(Exp->child, t1);
+        char *code2 = translate_Exp(Exp->child->next->next, t2);
+        char *code3 = malloc(64);
+        sprintf(code3, "%s := %s + %s\n", place, t1, t2);
+        char *buff = malloc(1024);
+        sprintf(buff, "%s%s%s", code1, code2, code3);
+        return buff;
+    }
+    if(strcasecmp(Exp->child->next->name, "minus") == 0){
+        char *t1 = new_place();
+        char *t2 = new_place();
+        char *code1 = translate_Exp(Exp->child, t1);
+        char *code2 = translate_Exp(Exp->child->next->next, t2);
+        char *code3 = malloc(64);
+        sprintf(code3, "%s := %s - %s\n", place, t1, t2);
+        char *buff = malloc(1024);
+        sprintf(buff, "%s%s%s", code1, code2, code3);
+        return buff;
+    }
+    if(strcasecmp(Exp->child->next->name, "mul") == 0){
+        char *t1 = new_place();
+        char *t2 = new_place();
+        char *code1 = translate_Exp(Exp->child, t1);
+        char *code2 = translate_Exp(Exp->child->next->next, t2);
+        char *code3 = malloc(64);
+        sprintf(code3, "%s := %s * %s\n", place, t1, t2);
+        char *buff = malloc(1024);
+        sprintf(buff, "%s%s%s", code1, code2, code3);
+        return buff;
+    }
+    if(strcasecmp(Exp->child->next->name, "div") == 0){
+        char *t1 = new_place();
+        char *t2 = new_place();
+        char *code1 = translate_Exp(Exp->child, t1);
+        char *code2 = translate_Exp(Exp->child->next->next, t2);
+        char *code3 = malloc(64);
+        sprintf(code3, "%s := %s / %s\n", place, t1, t2);
+        char *buff = malloc(1024);
+        sprintf(buff, "%s%s%s", code1, code2, code3);
+        return buff;
+    }
+    if(strcasecmp(Exp->child->name, "minus") == 0){
+        char *tp = new_place();
+        char *code1 = translate_Exp(Exp->child->next, tp);
+        char *code2 = malloc(64);
+        sprintf(code2, "%s := #0 - %s\n", place, tp);
+        char *buff = malloc(1024);
+        sprintf(buff, "%s%s", code1, code2);
+        return buff;
+    }
+    if(strcasecmp(Exp->child->next->name, "LB") == 0){
+        return NULL;
     }
     return NULL;
 }

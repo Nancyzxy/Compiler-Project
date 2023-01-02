@@ -89,7 +89,7 @@ int symtab_insert(symtab *, char *, VAL_T);
 
 // lookup the value of a specific key
 // return -1 if not found
-VAL_T symtab_lookup(symtab *, char *);
+VAL_T* symtab_lookup(symtab *, char *);
 
 // remove a key-value pair from the table
 // if remove success, return 1, otherwise 0
