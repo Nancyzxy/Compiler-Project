@@ -236,3 +236,173 @@ LABEL label7t27 := t5
 [INFO] 2023-01-03 01:38:55,831 (irsim.py 567): File loaded successfully
 [INFO] 2023-01-03 01:38:56,714 (irsim.py 567): Program has exited gracefully
 [INFO] 2023-01-03 01:38:56,715 (irsim.py 567): Total instructions = 58
+[DEBUG] 2023-01-03 02:11:02,931 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '3', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 02:11:02,933 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 02:11:05,234 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 02:11:05,235 (irsim.py 567): Total instructions = 31
+[DEBUG] 2023-01-03 02:47:13,247 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 02:47:13,251 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 02:47:19,941 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 02:47:19,941 (irsim.py 567): Total instructions = 140
+[DEBUG] 2023-01-03 02:58:15,727 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 02:58:15,729 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 02:58:18,678 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 02:58:18,678 (irsim.py 567): Total instructions = 88
+[DEBUG] 2023-01-03 02:59:17,617 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 02:59:17,619 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 02:59:18,941 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 02:59:18,942 (irsim.py 567): Total instructions = 85
+[DEBUG] 2023-01-03 03:00:24,362 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:00:24,364 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:01:37,145 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:01:37,147 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:03:42,008 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:03:42,010 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:04:41,464 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:04:41,466 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:04:42,625 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:04:42,626 (irsim.py 567): Total instructions = 26
+[DEBUG] 2023-01-03 03:05:28,361 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:05:28,363 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:05:29,876 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:05:29,877 (irsim.py 567): Total instructions = 85
+[DEBUG] 2023-01-03 03:07:24,239 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:07:24,241 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:07:25,822 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:07:25,822 (irsim.py 567): Total instructions = 85
+[DEBUG] 2023-01-03 03:09:43,030 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:09:43,032 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:12:37,349 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:12:37,351 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:12:51,858 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:12:51,860 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:14:26,255 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:14:26,256 (irsim.py 567): Total instructions = 52
+[INFO] 2023-01-03 03:14:31,903 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:14:31,903 (irsim.py 567): Total instructions = 104
+[INFO] 2023-01-03 03:14:33,834 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:14:33,834 (irsim.py 567): Total instructions = 156
+[INFO] 2023-01-03 03:14:35,765 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:14:35,765 (irsim.py 567): Total instructions = 208
+[INFO] 2023-01-03 03:14:37,699 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:14:37,700 (irsim.py 567): Total instructions = 260
+[DEBUG] 2023-01-03 03:14:59,405 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:14:59,408 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:15:00,307 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:15:00,307 (irsim.py 567): Total instructions = 52
+[DEBUG] 2023-01-03 03:16:39,387 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:16:39,389 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:16:41,858 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:16:41,858 (irsim.py 567): Total instructions = 56
+[WARNING] 2023-01-03 03:17:01,763 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
+[WARNING] 2023-01-03 03:17:03,038 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
+[WARNING] 2023-01-03 03:17:03,595 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
+[DEBUG] 2023-01-03 03:17:08,677 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:17:08,679 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:18:13,477 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:18:13,479 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:24:12,673 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:24:12,675 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:24:20,774 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:24:20,776 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:24:22,256 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:24:22,256 (irsim.py 567): Total instructions = 36
+[DEBUG] 2023-01-03 03:24:31,540 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:24:31,542 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:25:30,982 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:25:30,984 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:25:37,178 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:25:37,181 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:25:49,901 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:25:49,901 (irsim.py 567): Total instructions = 36
+[INFO] 2023-01-03 03:25:52,680 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:25:52,681 (irsim.py 567): Total instructions = 72
+[INFO] 2023-01-03 03:25:54,011 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:25:54,012 (irsim.py 567): Total instructions = 108
+[INFO] 2023-01-03 03:25:55,343 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:25:55,344 (irsim.py 567): Total instructions = 144
+[INFO] 2023-01-03 03:25:56,671 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:25:56,671 (irsim.py 567): Total instructions = 180
+[INFO] 2023-01-03 03:25:58,003 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:25:58,003 (irsim.py 567): Total instructions = 216
+[INFO] 2023-01-03 03:25:59,332 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:25:59,333 (irsim.py 567): Total instructions = 252
+[INFO] 2023-01-03 03:26:02,610 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:26:02,611 (irsim.py 567): Total instructions = 288
+[DEBUG] 2023-01-03 03:26:47,242 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:26:47,244 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:27:33,910 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:27:33,912 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:33:01,670 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:33:01,672 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:34:32,646 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:34:32,648 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:34:34,762 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:34:34,762 (irsim.py 567): Total instructions = 18
+[DEBUG] 2023-01-03 03:42:15,490 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:42:15,492 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:42:26,711 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:42:26,712 (irsim.py 567): Total instructions = 18
+[DEBUG] 2023-01-03 03:42:51,168 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:42:51,170 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:42:52,853 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:42:52,854 (irsim.py 567): Total instructions = 195
+[DEBUG] 2023-01-03 03:44:28,484 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:44:28,486 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:44:36,893 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '12,24', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:44:36,896 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:44:38,206 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:44:38,206 (irsim.py 567): Total instructions = 75
+[DEBUG] 2023-01-03 03:44:51,434 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '6,106', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:44:51,437 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:44:52,723 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:44:52,723 (irsim.py 567): Total instructions = 157
+[DEBUG] 2023-01-03 03:45:23,082 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '-1', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:45:23,084 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:45:24,287 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:45:24,288 (irsim.py 567): Total instructions = 12
+[DEBUG] 2023-01-03 03:46:12,366 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '5', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:46:12,368 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:46:31,663 (irsim.py 567): KeyboardInterrupt raised, quit program
+[DEBUG] 2023-01-03 03:47:07,142 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 03:47:07,144 (irsim.py 581): Syntax error at line 107:
+ARG t84Qt78 := t79
+[ERROR] 2023-01-03 03:47:07,145 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2023-01-03 03:49:29,575 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 03:49:29,577 (irsim.py 581): Syntax error at line 107:
+ARG t84Qt78 := t79
+[ERROR] 2023-01-03 03:49:29,577 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2023-01-03 03:52:22,290 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:52:22,293 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:52:27,681 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:52:27,684 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:52:38,794 (irsim.py 567): KeyboardInterrupt raised, quit program
+[DEBUG] 2023-01-03 03:52:49,872 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 03:52:49,873 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2023-01-03 03:53:33,836 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:53:33,839 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 03:54:41,125 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:54:41,127 (irsim.py 567): File loaded successfully
+[ERROR] 2023-01-03 03:54:42,530 (irsim.py 581): An error occurred at line 35: Illegal memory access
+[DEBUG] 2023-01-03 03:55:28,559 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:55:28,562 (irsim.py 567): File loaded successfully
+[ERROR] 2023-01-03 03:55:29,665 (irsim.py 581): An error occurred at line 35: Illegal memory access
+[DEBUG] 2023-01-03 03:56:03,200 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '5', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:56:03,202 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:56:04,013 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:56:04,014 (irsim.py 567): Total instructions = 47
+[DEBUG] 2023-01-03 03:56:11,210 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '55', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:56:11,212 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:56:12,671 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:56:12,671 (irsim.py 567): Total instructions = 74
+[DEBUG] 2023-01-03 03:56:44,715 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '56', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:56:44,718 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:56:46,098 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:56:46,099 (irsim.py 567): Total instructions = 74
+[DEBUG] 2023-01-03 03:57:06,729 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:57:06,731 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:57:10,936 (irsim.py 567): KeyboardInterrupt raised, quit program
+[DEBUG] 2023-01-03 03:59:49,700 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 03:59:49,702 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 03:59:51,452 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 03:59:51,452 (irsim.py 567): Total instructions = 590
