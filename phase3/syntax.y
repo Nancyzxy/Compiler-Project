@@ -267,58 +267,6 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
             }  
       }
       | Specifier FunDec CompSt {$$ = insert("ExtDef",3,$1,$2,$3);@$ = @1;$$->lineNo=(@1).first_line;
-            if(symtab_lookup(root, $2->child->attribute)->a != -1){printf("Error type 4 at Line %d: redefine function: %s\n",(@1).first_line,$2->child->attribute);}
-            else{
-              struct Info *val = malloc(sizeof(Info));
-              struct Type *returnType = malloc(sizeof(Type));
-              returnType->name= $1->child->attribute;
-              returnType->category = PRIMITIVE;//todo
-              struct ParaList *paralist;
-              val->type = NULL;
-              if($2->child->next->next->next != NULL){
-                    node* cur = $2->child->next->next->child;
-                    struct Type *para = malloc(sizeof(Type));
-                    para->name = cur->child->child->attribute;
-                    para->category = PRIMITIVE;//todo
-                    paralist = malloc(sizeof(ParaList));
-                    paralist->type = para;
-                    paralist->next = NULL;
-                    struct ParaList *curpara = paralist;
-                    while(cur->next != NULL){
-                        cur = cur->next->next->child;
-                        struct Type* paraType = malloc(sizeof(Type));
-                        paraType->name = cur->child->child->attribute;
-                        paraType->category = PRIMITIVE;
-                        struct ParaList *nextPara = malloc(sizeof(ParaList));
-                        nextPara->type = paraType;
-                        nextPara->next = NULL;
-                        curpara->next = nextPara;
-                        curpara = curpara->next;
-                    }
-                }
-                else{
-                    paralist = NULL;
-                }
-                val->a = 2;
-                val->return_type = returnType;
-                val->paraList = paralist;
-                val->t = -1;
-                symtab_insert(root, $2->child->attribute, *val);
-                printf("FUNCTION %s :\n", $2->child->attribute);
-                if(strcasecmp($2->child->next->next->name,"RP") != 0){
-                    node* varList = $2->child->next->next;
-                    char* place = new_place();
-                    Info *id = symtab_lookup(root, varList->child->child->next->child->attribute);
-                    id->t = count1 - 1;
-                    printf("PARAM %s\n", place);
-                    while(varList->child->next != NULL){
-                        place = new_place();
-                        printf("PARAM %s\n", place);
-                        varList = varList->child->next->next;
-                        Info *id1 = symtab_lookup(root, varList->child->child->next->child->attribute);
-                        id1->t = count1 - 1;
-                    }
-                }
                 node* defList = $3->child->next;
                 while(defList->child != NULL){
                     printf("%s",translate_def(defList->child));
@@ -329,16 +277,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                     printf("%s",translate_stmt(stmtList->child));
                     stmtList = stmtList->child->next;
                 }
-                
-            }  
-
-       char * returnType;
-       if(strcasecmp($$->child->child->name,"TYPE")==0){
-        returnType = $$->child->child->attribute;
-       } else returnType = $$->child->child->child->next->attribute;
-        if(confirmReturnType($3,returnType)==0){
-            printf("Error type 8 at Line %d: incompatiable return type\n",line);
-        }
+                 
       }
       ;
 
@@ -371,9 +310,82 @@ VarDec: ID {$$ = insert("VarDec",1,alloNodeC($1,"ID"));@$ = @1;$$->lineNo=(@1).f
       ;
 
 FunDec: ID LP VarList RP {$$ = insert("FunDec",4,alloNodeC($1,"ID"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;
-    //加递归
-}
-      | ID LP RP {$$ = insert("FunDec",3,alloNodeC($1,"ID"),alloNodeC("(","LP"),alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
+    if(symtab_lookup(root, $$->child->attribute)->a != -1){printf("Error type 4 at Line %d: redefine function: %s\n",(@1).first_line,$$->child->attribute);}
+            else{
+              struct Info *val = malloc(sizeof(Info));
+              struct Type *returnType = malloc(sizeof(Type));
+              returnType->name= "int";
+              returnType->category = PRIMITIVE;//todo
+              struct ParaList *paralist;
+              val->type = NULL;
+              if($$->child->next->next->next != NULL){
+                    node* cur = $$->child->next->next->child;
+                    struct Type *para = malloc(sizeof(Type));
+                    para->name = cur->child->child->attribute;
+                    para->category = PRIMITIVE;//todo
+                    paralist = malloc(sizeof(ParaList));
+                    paralist->type = para;
+                    paralist->next = NULL;
+                    struct ParaList *curpara = paralist;
+                    while(cur->next != NULL){
+                        cur = cur->next->next->child;
+                        struct Type* paraType = malloc(sizeof(Type));
+                        paraType->name = cur->child->child->attribute;
+                        paraType->category = PRIMITIVE;
+                        struct ParaList *nextPara = malloc(sizeof(ParaList));
+                        nextPara->type = paraType;
+                        nextPara->next = NULL;
+                        curpara->next = nextPara;
+                        curpara = curpara->next;
+                    }
+                }
+                else{
+                    paralist = NULL;
+                }
+                val->a = 2;
+                val->return_type = returnType;
+                val->paraList = paralist;
+                val->t = -1;
+                symtab_insert(root, $$->child->attribute, *val);
+                printf("FUNCTION %s :\n", $$->child->attribute);
+                node* varList = $$->child->next->next;
+                char* place = new_place();
+                Info *id = symtab_lookup(root, varList->child->child->next->child->attribute);
+                id->t = count1 - 1;
+                printf("PARAM %s\n", place);
+                while(varList->child->next != NULL){
+                    place = new_place();
+                    printf("PARAM %s\n", place);
+                    varList = varList->child->next->next;
+                    Info *id1 = symtab_lookup(root, varList->child->child->next->child->attribute);
+                    id1->t = count1 - 1;
+                }
+                
+                
+            }  
+
+       
+      }
+      ;
+      | ID LP RP {$$ = insert("FunDec",3,alloNodeC($1,"ID"),alloNodeC("(","LP"),alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;
+            if(symtab_lookup(root, $$->child->attribute)->a != -1){printf("Error type 4 at Line %d: redefine function: %s\n",(@1).first_line,$$->child->attribute);}
+            else{
+              struct Info *val = malloc(sizeof(Info));
+              struct Type *returnType = malloc(sizeof(Type));
+              returnType->name= "int";
+              returnType->category = PRIMITIVE;//todo
+              struct ParaList *paralist;
+              val->type = NULL;
+              paralist = NULL;  
+                val->a = 2;
+                val->return_type = returnType;
+                val->paraList = paralist;
+                val->t = -1;
+                symtab_insert(root, $$->child->attribute, *val);
+                printf("FUNCTION %s :\n", $$->child->attribute);
+                 
+      }
+      }
       | ID LP error {flag=1; printf("Error type B at Line %d: Missing closing parenthesis ')'\n",(@2).first_line);}
       ;
 
