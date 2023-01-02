@@ -1,7 +1,5 @@
 int main()
 {
-   int n,m=1*2,j,k;
-   n = -2;
-   write(j);
-
+    int n[2];
+    n[1] = 1;
 }
