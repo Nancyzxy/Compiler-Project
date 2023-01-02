@@ -10,7 +10,6 @@ ARG t1
 t2 := CALL fact
 t3 := v1 * t2
 RETURN t3
-
 FUNCTION main :
 READ t4
 v2 := t4

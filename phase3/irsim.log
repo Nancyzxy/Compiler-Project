@@ -37,3 +37,202 @@ FUNCTION main
 [ERROR] 2023-01-03 00:44:14,546 (irsim.py 581): Syntax error at line 1:
 FUNCTION main
 [ERROR] 2023-01-03 00:44:14,547 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2023-01-03 00:46:30,997 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 00:46:30,999 (irsim.py 581): Syntax error at line 1:
+FUNCTION main
+[ERROR] 2023-01-03 00:46:30,999 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2023-01-03 00:47:41,667 (irsim.py 620): Parsed arguments: {'irpath': 'sample/test01.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 00:47:41,670 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 00:48:33,847 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 00:48:33,848 (irsim.py 581): Syntax error at line 1:
+FUNCTION main
+[ERROR] 2023-01-03 00:48:33,849 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2023-01-03 00:49:16,062 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 00:49:16,064 (irsim.py 581): Syntax error at line 1:
+FUNCTION main
+[ERROR] 2023-01-03 00:49:16,064 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2023-01-03 00:50:07,669 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 00:50:07,671 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 00:51:04,522 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 00:51:04,524 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 00:51:07,134 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 00:51:07,135 (irsim.py 567): Total instructions = 41
+[DEBUG] 2023-01-03 00:53:13,642 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '2000,12', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 00:53:13,644 (irsim.py 581): Syntax error at line 12:
+IF t7 == t8 GOTO lable 1
+[INFO] 2023-01-03 00:53:13,644 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 00:53:26,266 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '2000,12', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 00:53:26,268 (irsim.py 581): Syntax error at line 12:
+IF t7 == t8 GOTO lable 1
+[INFO] 2023-01-03 00:53:26,268 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 00:55:44,079 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 00:55:44,080 (irsim.py 581): Syntax error at line 6:
+LABLE lable 1
+[INFO] 2023-01-03 00:55:44,080 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 00:55:59,255 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 00:55:59,257 (irsim.py 567): File loaded successfully
+[ERROR] 2023-01-03 00:56:00,272 (irsim.py 581): An error occurred at line 16: Illegal memory access
+[DEBUG] 2023-01-03 00:56:15,730 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 00:56:15,731 (irsim.py 581): Syntax error at line 16:
+IF t21 < t22 GOTO lable 1
+[INFO] 2023-01-03 00:56:15,732 (irsim.py 567): File loaded successfully
+[ERROR] 2023-01-03 00:56:16,472 (irsim.py 581): An error occurred at line 12: Illegal memory access
+[DEBUG] 2023-01-03 00:56:25,573 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 00:56:25,574 (irsim.py 581): Line 1 does not belong to any function:
+Error type 2 at Line 6: undefined function: hanoi
+[ERROR] 2023-01-03 00:56:25,575 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2023-01-03 00:56:56,765 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 00:56:56,766 (irsim.py 581): Syntax error at line 12:
+LABLE lable 1
+[ERROR] 2023-01-03 00:56:56,767 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2023-01-03 00:57:09,804 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 00:57:09,805 (irsim.py 581): Syntax error at line 12:
+Error type 2 at Line 10: undefined function: DigitSum
+[ERROR] 2023-01-03 00:57:09,806 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2023-01-03 00:57:24,060 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 00:57:24,062 (irsim.py 581): Syntax error at line 25:
+LABLE lable 1
+[ERROR] 2023-01-03 00:57:24,062 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2023-01-03 00:57:43,407 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 00:57:43,409 (irsim.py 581): Syntax error at line 6:
+IF t4 > t5 GOTO lable 1
+[INFO] 2023-01-03 00:57:43,410 (irsim.py 567): File loaded successfully
+[ERROR] 2023-01-03 00:57:44,673 (irsim.py 581): An error occurred at line 2: Illegal memory access
+[DEBUG] 2023-01-03 00:58:40,423 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 00:58:40,425 (irsim.py 581): Syntax error at line 6:
+IF t4 > t5 GOTO lable 1
+[INFO] 2023-01-03 00:58:40,425 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:06:01,520 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:06:01,521 (irsim.py 581): Syntax error at line 6:
+IF t4 > t5 GOTO lable 1
+[INFO] 2023-01-03 01:06:01,522 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:08:10,558 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:08:10,560 (irsim.py 581): Syntax error at line 6:
+IF t4 > t5 GOTO lable 1
+[INFO] 2023-01-03 01:08:10,561 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:08:23,231 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:08:23,232 (irsim.py 581): Syntax error at line 6:
+IF t4 > t5 GOTO lable 1
+[INFO] 2023-01-03 01:08:23,233 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:09:49,095 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:09:49,096 (irsim.py 581): Syntax error at line 6:
+IF t4 > t5 GOTO lable 1
+[INFO] 2023-01-03 01:09:49,097 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:10:16,764 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:10:16,766 (irsim.py 581): Syntax error at line 6:
+IF t4 > t5 GOTO lable 1
+[INFO] 2023-01-03 01:10:16,766 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:10:21,802 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:10:21,804 (irsim.py 581): Syntax error at line 6:
+IF t4 > t5 GOTO lable 1
+[INFO] 2023-01-03 01:10:21,804 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:11:29,808 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:11:29,809 (irsim.py 581): Syntax error at line 7:
+IF t4 > t5 GOTO lable 1
+[INFO] 2023-01-03 01:11:29,810 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:11:54,383 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:11:54,384 (irsim.py 581): Syntax error at line 7:
+IF t4 > t5 GOTO lable 1
+[INFO] 2023-01-03 01:11:54,385 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:12:17,748 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:12:17,750 (irsim.py 581): Syntax error at line 5:
+IF t4 > t5 GOTO lable 1
+[INFO] 2023-01-03 01:12:17,750 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:12:33,057 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:12:33,058 (irsim.py 581): Syntax error at line 6:
+IF t4 > t5 GOTO lable 1
+[INFO] 2023-01-03 01:12:33,058 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:12:56,734 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:12:56,736 (irsim.py 581): Syntax error at line 7:
+GOTO lable 2
+[ERROR] 2023-01-03 01:12:56,736 (irsim.py 581): Undefined label at line 6: IF t4 > t5 GOTO lable1
+[ERROR] 2023-01-03 01:12:56,737 (irsim.py 581): Loading failed
+[DEBUG] 2023-01-03 01:12:59,600 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:12:59,602 (irsim.py 581): Syntax error at line 7:
+GOTO lable 2
+[ERROR] 2023-01-03 01:12:59,603 (irsim.py 581): Undefined label at line 6: IF t4 > t5 GOTO lable1
+[ERROR] 2023-01-03 01:12:59,603 (irsim.py 581): Loading failed
+[DEBUG] 2023-01-03 01:13:17,263 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:13:17,264 (irsim.py 581): Syntax error at line 7:
+GOTO lable 2
+[ERROR] 2023-01-03 01:13:17,265 (irsim.py 581): Undefined label at line 6: IF t4 > t5 GOTO lable1
+[ERROR] 2023-01-03 01:13:17,265 (irsim.py 581): Loading failed
+[DEBUG] 2023-01-03 01:13:27,120 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:13:27,122 (irsim.py 581): Syntax error at line 6:
+IF t4 > t5 GOTO lable 1
+[INFO] 2023-01-03 01:13:27,122 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:16:36,795 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:16:36,796 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:16:44,263 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:16:44,264 (irsim.py 567): Total instructions = 11
+[ERROR] 2023-01-03 01:16:45,048 (irsim.py 581): An error occurred at line 2: Illegal memory access
+[ERROR] 2023-01-03 01:16:45,726 (irsim.py 581): An error occurred at line 2: Illegal memory access
+[DEBUG] 2023-01-03 01:16:54,366 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:16:54,368 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:17:11,530 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:17:11,530 (irsim.py 567): Total instructions = 11
+[DEBUG] 2023-01-03 01:17:19,795 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '-1', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:17:19,797 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:17:21,371 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:17:21,371 (irsim.py 567): Total instructions = 17
+[DEBUG] 2023-01-03 01:17:29,989 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '0', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:17:29,990 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:17:31,306 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:17:31,307 (irsim.py 567): Total instructions = 17
+[DEBUG] 2023-01-03 01:17:57,585 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '2000,10', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:17:57,587 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:17:59,733 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:17:59,734 (irsim.py 567): Total instructions = 38
+[DEBUG] 2023-01-03 01:18:43,105 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '2000,11', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:18:43,108 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:18:44,133 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:18:44,133 (irsim.py 567): Total instructions = 39
+[DEBUG] 2023-01-03 01:18:50,332 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '2000,2', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:18:50,334 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:18:51,071 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:18:51,071 (irsim.py 567): Total instructions = 29
+[DEBUG] 2023-01-03 01:19:03,688 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '1999,2', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:19:03,690 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:19:04,777 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:19:04,777 (irsim.py 567): Total instructions = 31
+[DEBUG] 2023-01-03 01:19:13,282 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '1999,12', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:19:13,284 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:19:15,086 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:19:15,086 (irsim.py 567): Total instructions = 40
+[DEBUG] 2023-01-03 01:19:40,518 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:19:40,520 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:21:15,918 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:21:15,920 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:32:24,289 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:32:24,291 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:32:33,706 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:32:33,707 (irsim.py 567): Total instructions = 8550
+[WARNING] 2023-01-03 01:32:33,707 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
+[DEBUG] 2023-01-03 01:33:55,799 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '10', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:33:55,801 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:33:59,168 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:33:59,168 (irsim.py 567): Total instructions = 31
+[WARNING] 2023-01-03 01:34:22,058 (irsim.py 574): Program Counter goes out of bound. The running program will be terminated instantly
+[DEBUG] 2023-01-03 01:34:37,475 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '2', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:34:37,477 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:34:38,740 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:34:38,740 (irsim.py 567): Total instructions = 31
+[DEBUG] 2023-01-03 01:34:44,347 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '2', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:34:44,348 (irsim.py 567): File loaded successfully
+[DEBUG] 2023-01-03 01:36:30,317 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '0', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-03 01:36:30,319 (irsim.py 581): Syntax error at line 27:
+LABEL label7t27 := t5
+[ERROR] 2023-01-03 01:36:30,319 (irsim.py 581): Undefined label at line 21: GOTO label3
+[ERROR] 2023-01-03 01:36:30,319 (irsim.py 581): Loading failed
+[DEBUG] 2023-01-03 01:38:27,398 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '0', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:38:27,400 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:38:28,426 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:38:28,426 (irsim.py 567): Total instructions = 21
+[DEBUG] 2023-01-03 01:38:43,738 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '1', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:38:43,740 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:38:44,854 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:38:44,854 (irsim.py 567): Total instructions = 26
+[DEBUG] 2023-01-03 01:38:55,829 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '3', 'logpath': 'irsim.log'}
+[INFO] 2023-01-03 01:38:55,831 (irsim.py 567): File loaded successfully
+[INFO] 2023-01-03 01:38:56,714 (irsim.py 567): Program has exited gracefully
+[INFO] 2023-01-03 01:38:56,715 (irsim.py 567): Total instructions = 58

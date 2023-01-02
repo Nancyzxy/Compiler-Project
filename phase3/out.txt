@@ -1,8 +1,65 @@
-FUNCTION main
-DEC t1 8
-t4 := #1
-t5 := t4 * #4
-t6 := &t1 + t5
-t3 := *t6
-t7 := #1
-t3 := t7
+Error type 2 at Line 6: undefined function: hanoi
+Error type 2 at Line 8: undefined function: hanoi
+FUNCTION hanoi :
+PARAM t1
+PARAM t2
+PARAM t3
+PARAM t4
+t5 := t6
+t6 := #1
+IF t5 == t6 GOTO label1
+GOTO label2
+LABEL label1 :
+t11 := t12
+t12 := #1000000
+t9 := t11 * t12
+t10 := t12
+t8 := t9 + t10
+WRITE t8
+GOTO label3
+LABEL label2 :
+t15 := t6
+t16 := #1
+t14 := t15 - t16
+t17 := t12
+t18 := t12
+t19 := t19
+ARG t16
+ARG t17
+ARG t18
+ARG t19
+t13 := CALL hanoi
+t24 := t12
+t25 := #1000000
+t22 := t24 * t25
+t23 := t12
+t21 := t22 + t23
+WRITE t21
+t28 := t6
+t29 := #1
+t27 := t28 - t29
+t30 := t19
+t31 := t12
+t32 := t12
+ARG t29
+ARG t30
+ARG t31
+ARG t32
+t26 := CALL hanoi
+LABEL label3 :
+t33 := #0
+RETURN t33
+FUNCTION main :
+t35 := #3
+t34 := t35
+t37 := t34
+t38 := #1
+t39 := #2
+t40 := #3
+ARG t37
+ARG t38
+ARG t39
+ARG t40
+t36 := CALL hanoi
+t41 := #0
+RETURN t41

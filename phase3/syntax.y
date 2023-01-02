@@ -304,7 +304,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                 val->paraList = paralist;
                 val->t = -1;
                 symtab_insert(root, $2->child->attribute, *val);
-                printf("FUNCTION %s\n", $2->child->attribute);
+                printf("FUNCTION %s :\n", $2->child->attribute);
                 if(strcasecmp($2->child->next->next->name,"RP") != 0){
                     node* varList = $2->child->next->next;
                     char* place = new_place();
@@ -327,7 +327,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                 }
                 
             }  
-    //    /******/
+
        char * returnType;
        if(strcasecmp($$->child->child->name,"TYPE")==0){
         returnType = $$->child->child->attribute;
@@ -831,7 +831,7 @@ char* translate_def(node* def){
                 char* code1 = translate_Exp(dec->child->next->next, tp);
                 char* code2 = malloc(64);
                 sprintf(code2, "t%d := %s\n", id->t, tp);
-                sprintf(code, "%s%s",code1,code2);
+                sprintf(code, "%s%s%s",code,code1,code2);
             }
             decList = decList->child->next->next;
         }
@@ -867,7 +867,7 @@ char* translate_def(node* def){
             char* code1 = translate_Exp(dec->child->next->next, tp);
             char* code2 = malloc(64);
             sprintf(code2, "t%d := %s\n", id->t, tp);
-            sprintf(code, "%s%s",code1,code2);
+            sprintf(code, "%s%s%s",code,code1,code2);
         }
         }
     else{
@@ -885,7 +885,7 @@ char* translate_cond_Exp(node* Exp, char* lb1, char* lb2){
         char* code1 = translate_cond_Exp(Exp->child, lb, lb2);
         char* code2 = translate_cond_Exp(Exp->child->next->next, lb1, lb2);
         char* code3 = malloc(1024);
-        sprintf(code3,"%sLABEL %s%s",code1,lb,code2);
+        sprintf(code3,"%sLABEL %s :\n%s",code1,lb,code2);
         return code3;
     }
     if(strcasecmp(Exp->child->next->name, "OR") == 0){
@@ -893,7 +893,7 @@ char* translate_cond_Exp(node* Exp, char* lb1, char* lb2){
         char* code1 = translate_cond_Exp(Exp->child, lb1, lb);
         char* code2 = translate_cond_Exp(Exp->child->next->next, lb1, lb2);
         char* code3 = malloc(1024);
-        sprintf(code3,"%sLABEL %s%s",code1,lb,code2);
+        sprintf(code3,"%sLABEL %s :\n%s",code1,lb,code2);
         return code3;
     }
     if(strcasecmp(Exp->child->next->name, "LT") == 0){
@@ -902,7 +902,7 @@ char* translate_cond_Exp(node* Exp, char* lb1, char* lb2){
         char* code1 = translate_Exp(Exp->child,t1);
         char* code2 = translate_Exp(Exp->child->next->next,t2);
         char* code3 = malloc(1024);
-        sprintf(code3,"IF %s < %s GOTO %sGOTO %s",t1,t2,lb1,lb2);
+        sprintf(code3,"IF %s < %s GOTO %s\nGOTO %s\n",t1,t2,lb1,lb2);
         char* code4 = malloc(1024);
         sprintf(code4,"%s%s%s",code1,code2,code3);
         return code4;
@@ -913,7 +913,7 @@ char* translate_cond_Exp(node* Exp, char* lb1, char* lb2){
         char* code1 = translate_Exp(Exp->child,t1);
         char* code2 = translate_Exp(Exp->child->next->next,t2);
         char* code3 = malloc(1024);
-        sprintf(code3,"IF %s <= %s GOTO %sGOTO %s",t1,t2,lb1,lb2);
+        sprintf(code3,"IF %s <= %s GOTO %s\nGOTO %s\n",t1,t2,lb1,lb2);
         char* code4 = malloc(1024);
         sprintf(code4,"%s%s%s",code1,code2,code3);
         return code4;
@@ -924,7 +924,7 @@ char* translate_cond_Exp(node* Exp, char* lb1, char* lb2){
         char* code1 = translate_Exp(Exp->child,t1);
         char* code2 = translate_Exp(Exp->child->next->next,t2);
         char* code3 = malloc(1024);
-        sprintf(code3,"IF %s > %s GOTO %sGOTO %s",t1,t2,lb1,lb2);
+        sprintf(code3,"IF %s > %s GOTO %s\nGOTO %s\n",t1,t2,lb1,lb2);
         char* code4 = malloc(1024);
         sprintf(code4,"%s%s%s",code1,code2,code3);
         return code4;
@@ -935,7 +935,7 @@ char* translate_cond_Exp(node* Exp, char* lb1, char* lb2){
         char* code1 = translate_Exp(Exp->child,t1);
         char* code2 = translate_Exp(Exp->child->next->next,t2);
         char* code3 = malloc(1024);
-        sprintf(code3,"IF %s >= %s GOTO %sGOTO %s",t1,t2,lb1,lb2);
+        sprintf(code3,"IF %s >= %s GOTO %s\nGOTO %s\n",t1,t2,lb1,lb2);
         char* code4 = malloc(1024);
         sprintf(code4,"%s%s%s",code1,code2,code3);
         return code4;
@@ -946,7 +946,7 @@ char* translate_cond_Exp(node* Exp, char* lb1, char* lb2){
         char* code1 = translate_Exp(Exp->child,t1);
         char* code2 = translate_Exp(Exp->child->next->next,t2);
         char* code3 = malloc(1024);
-        sprintf(code3,"IF %s == %s GOTO %sGOTO %s",t1,t2,lb1,lb2);
+        sprintf(code3,"IF %s == %s GOTO %s\nGOTO %s\n",t1,t2,lb1,lb2);
         char* code4 = malloc(1024);
         sprintf(code4,"%s%s%s",code1,code2,code3);
         return code4;
@@ -957,7 +957,7 @@ char* translate_cond_Exp(node* Exp, char* lb1, char* lb2){
         char* code1 = translate_Exp(Exp->child,t1);
         char* code2 = translate_Exp(Exp->child->next->next,t2);
         char* code3 = malloc(1024);
-        sprintf(code3,"IF %s != %s GOTO %sGOTO %s",t1,t2,lb1,lb2);
+        sprintf(code3,"IF %s != %s GOTO %s\nGOTO %s\n",t1,t2,lb1,lb2);
         char* code4 = malloc(1024);
         sprintf(code4,"%s%s%s",code1,code2,code3);
         return code4;
@@ -1001,7 +1001,7 @@ char* translate_stmt(node* stmt){
             char* code2 = translate_stmt(stmt->child->next->next->next->next);
             char* code3 = translate_stmt(stmt->child->next->next->next->next->next->next);
             char* code4 = malloc(1024);
-            sprintf(code4,"%sLABLE %s%sGOTO %sLABLE %s%sLABLE %s",code1,lb1,code2,lb3,lb2,code3,lb3);
+            sprintf(code4,"%sLABEL %s :\n%sGOTO %s\nLABEL %s :\n%sLABEL %s :\n",code1,lb1,code2,lb3,lb2,code3,lb3);
             return code4;
         }
         else{
@@ -1011,7 +1011,7 @@ char* translate_stmt(node* stmt){
             char* code1 = translate_cond_Exp(stmt->child->next->next, lb1, lb2);
             char* code2 = translate_stmt(stmt->child->next->next->next->next);
             char* code3 = malloc(1024);
-            sprintf(code3,"%sLABLE %s%sLABLE %s",code1,lb1,code2,lb2);
+            sprintf(code3,"%sLABEL %s :\n%sLABEL %s :\n",code1,lb1,code2,lb2);
             return code3;
         }
         return NULL;  
@@ -1024,7 +1024,7 @@ char* translate_stmt(node* stmt){
         char* code1 = translate_cond_Exp(stmt->child->next->next,lb2,lb3);
         char* code2 = translate_stmt(stmt->child->next->next->next->next);
         char* code3 = malloc(1024);
-        sprintf(code3,"LABLE %s%sLABLE %s%sGOTO %sLABLE %s",lb1,code1,lb2,code2,lb1,lb3);
+        sprintf(code3,"LABEL %s :\n%sLABEL %s :\n%sGOTO %s\nLABEL %s :\n",lb1,code1,lb2,code2,lb1,lb3);
         return code3;
     }
     if(strcasecmp(stmt->child->name, "RETURN") == 0){
@@ -1229,7 +1229,7 @@ char* new_place(){
 
 char* new_label(){
     char* buff = malloc(32);
-    sprintf(buff,"lable %d\n",count2);
+    sprintf(buff,"label%d",count2);
     count2++;
     return buff;
 }
