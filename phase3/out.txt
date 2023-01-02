@@ -1,7 +1,8 @@
 FUNCTION add
 PARAM t1
 PARAM t2
-(null)RETURN t3
+(null)
+RETURN t3
 FUNCTION main
 READ t6
 READ t7

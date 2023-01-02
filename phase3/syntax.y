@@ -26,6 +26,7 @@
     int confirmArgsType(node* root,ParaList* parameters);
     char* new_place();
     char* new_label();
+    char* translate_cond_Exp(node* Exp, char* lb1, char* lb2);
     char* translate_stmt(node* stmtList);
     char* translate_Exp(node* Exp, char* place);
     char* translate_Args(node* Args, int* arglist);
@@ -307,7 +308,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                 }
                 node* stmtList = $3->child->next->next;
                 while(stmtList->child != NULL){
-                    translate_stmt(stmtList);
+                    printf("%s",translate_stmt(stmtList));
                     stmtList = stmtList->child->next;
                 }
                 
@@ -768,11 +769,58 @@ Args: Exp COMMA Args {$2= alloNodeC(",","COMMA"); $$ = insert("Args",3,$1,$2,$3)
 void yyerror(const char *s) {
     fprintf(stderr, "%s at line %d\n", s, yylineno);
 }
+char* translate_cond_Exp(node* Exp, char* lb1, char* lb2){
+    if(strcasecmp(Exp->child->next->name, "AND") == 0){
+        char* tp = new_place();
+    }
+    if(strcasecmp(Exp->child->next->name, "OR") == 0){
+        char* tp = new_place();
+    }
+    if(strcasecmp(Exp->child->next->name, "LT") == 0){
+        char* tp = new_place();
+    }
+    if(strcasecmp(Exp->child->next->name, "LE") == 0){
+        char* tp = new_place();
+    }
+    if(strcasecmp(Exp->child->next->name, "GT") == 0){
+        char* tp = new_place();
+    }
+    if(strcasecmp(Exp->child->next->name, "GE") == 0){
+        char* tp = new_place();
+    }
+    if(strcasecmp(Exp->child->next->name, "EQ") == 0){
+        char* t1 = new_place();
+        char* t2 = new_place();
+        char* code1 = translate_Exp(Exp->child,t1);
+        char* code2 = translate_Exp(Exp->child,t2);
+        char* code3 = malloc(1024);
+        sprintf(code3,"IF %s == %s GOTO %s GOTO %s",t1,t2,lb1,lb2);
+        char* code4 = malloc(1024);
+        sprintf(code4,"%s\n%s\n%s",code1,code2,code3);
+        return code4;
+    }
+    if(strcasecmp(Exp->child->next->name, "NE") == 0){
+        char* t1 = new_place();
+        char* t2 = new_place();
+        char* code1 = translate_Exp(Exp->child,t1);
+        char* code2 = translate_Exp(Exp->child,t2);
+        char* code3 = malloc(1024);
+        sprintf(code3,"IF %s != %s GOTO %s GOTO %s",t1,t2,lb1,lb2);
+        char* code4 = malloc(1024);
+        sprintf(code4,"%s\n%s\n%s",code1,code2,code3);
+        return code4;
+    }
+    if(strcasecmp(Exp->child->name, "NOT") == 0){
+        char* tp = new_place();
+    }
+}
 
 char* translate_stmt(node* stmtList){
     if(strcasecmp(stmtList->child->child->name, "Exp") == 0){
         char* tp = new_place();
-        printf("%s",translate_Exp(stmtList->child->child, tp));
+        char* buff = malloc(1024);
+        sprintf(buff,"%s",translate_Exp(stmtList->child->child, tp));
+        return buff;
     }
     if(strcasecmp(stmtList->child->child->name, "IF") == 0){
         char* lb1 = new_label();
@@ -784,8 +832,9 @@ char* translate_stmt(node* stmtList){
     }
     if(strcasecmp(stmtList->child->child->name, "RETURN") == 0){
         char* tp = new_place();
-        printf("%s",translate_Exp(stmtList->child->child->next, tp));
-        printf("RETURN %s\n", tp);
+        char* buff = malloc(1024);
+        sprintf(buff,"%s\n%s%s\n",translate_Exp(stmtList->child->child->next, tp),"RETURN ",tp);
+        return buff;
     }
 }
 
