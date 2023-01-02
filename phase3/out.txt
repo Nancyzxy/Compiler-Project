@@ -1,2 +1,8 @@
 FUNCTION main
 DEC t1 8
+t4 := #1
+t5 := t4 * #4
+t6 := &t1 + t5
+t3 := *t6
+t7 := #1
+t3 := t7

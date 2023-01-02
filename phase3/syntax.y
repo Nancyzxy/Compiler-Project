@@ -1090,17 +1090,29 @@ char* translate_Exp(node* Exp, char* place){
         return buff;
     }
     if(strcasecmp(Exp->child->next->name, "assign") == 0){
-        Info* exp1 = symtab_lookup(root, Exp->child->child->attribute);
-        char *buff = malloc(1024); //ID
-        char* tp = new_place();
-        char* code1 = translate_Exp(Exp->child->next->next, tp);
-        char* code2 = malloc(64);
-        sprintf(code2, "t%d := %s\n", exp1->t, tp);
-        // char* code3 = malloc(64);
-        // sprintf(code3, "%s := t%d\n", place, exp1->t);
-        sprintf(buff, "%s%s",code1,code2);
-        return buff;
-        
+        if(strcasecmp(Exp->child->child->name,"ID")==0){
+            Info* exp1 = symtab_lookup(root, Exp->child->child->attribute);
+            char *buff = malloc(1024); //ID
+            char* tp = new_place();
+            char* code1 = translate_Exp(Exp->child->next->next, tp);
+            char* code2 = malloc(64);
+            sprintf(code2, "t%d := %s\n", exp1->t, tp);
+            sprintf(buff, "%s%s",code1,code2);
+            return buff;
+        }
+        if(strcasecmp(Exp->child->child->next->name,"LB")==0){
+            char *buff = malloc(1024); 
+            char* tp = new_place();
+            char* code0 = translate_Exp(Exp->child, tp);
+            char* tp1 = new_place();
+            char* code1 = translate_Exp(Exp->child->next->next, tp1);
+            char *code2 = malloc(1024); //ID
+            sprintf(code2, "%s := %s\n", tp, tp1);
+            sprintf(buff, "%s%s%s",code0,code1,code2);
+            return buff;
+            // return "null";
+        }
+    
     }
     if(strcasecmp(Exp->child->next->name, "plus") == 0){
         char *t1 = new_place();
@@ -1156,9 +1168,27 @@ char* translate_Exp(node* Exp, char* place){
         return buff;
     }
     if(strcasecmp(Exp->child->next->name, "LB") == 0){
-        return NULL;
+        char* code = malloc(1024);
+        char* tp1 = new_place();
+        char* code1 = translate_Exp(Exp->child->next->next, tp1);
+        char* tp2 = new_place();
+        sprintf(code, "%s%s := %s * #4\n",code1, tp2, tp1);
+        char* tp3;
+        char* code2 = malloc(1024);
+        // while(strcasecmp(Exp->child->child->name, "ID") != 0){
+        //     Exp = Exp->child;
+        //     tp3 = new_place();
+        //     code2 = translate_Exp(Exp->child->next->next, tp3);
+        //     sprintf(code, "%s%s%s := %s * %s\n", code, code2, tp2, tp2, tp3);
+        // }
+        Info* arr = symtab_lookup(root, Exp->child->child->attribute);
+        char* tp4 = new_place();
+        sprintf(code, "%s%s := &t%d + %s\n", code, tp4, arr->t, tp2);
+        sprintf(code, "%s%s := *%s\n", code, place, tp4);
+        return code;
+        // return "null";
     }
-    return NULL;
+    return "NULL";
 }
 
 char* translate_Args(node* Args, int* arglist){
