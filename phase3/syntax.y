@@ -308,11 +308,15 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                 if(strcasecmp($2->child->next->next->name,"RP") != 0){
                     node* varList = $2->child->next->next;
                     char* place = new_place();
+                    Info *id = symtab_lookup(root, varList->child->child->next->child->attribute);
+                    id->t = count1 - 1;
                     printf("PARAM %s\n", place);
                     while(varList->child->next != NULL){
                         place = new_place();
                         printf("PARAM %s\n", place);
                         varList = varList->child->next->next;
+                        Info *id1 = symtab_lookup(root, varList->child->child->next->child->attribute);
+                        id1->t = count1 - 1;
                     }
                 }
                 node* defList = $3->child->next;
@@ -366,7 +370,9 @@ VarDec: ID {$$ = insert("VarDec",1,alloNodeC($1,"ID"));@$ = @1;$$->lineNo=(@1).f
       | VarDec LB error RB {flag=1; printf("Error type B at Line %d: Wrong type of index\n",(@1).first_line);}
       ;
 
-FunDec: ID LP VarList RP {$$ = insert("FunDec",4,alloNodeC($1,"ID"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
+FunDec: ID LP VarList RP {$$ = insert("FunDec",4,alloNodeC($1,"ID"),alloNodeC("(","LP"),$3,alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;
+    //加递归
+}
       | ID LP RP {$$ = insert("FunDec",3,alloNodeC($1,"ID"),alloNodeC("(","LP"),alloNodeC(")","RP"));@$ = @1;$$->lineNo=(@1).first_line;}
       | ID LP error {flag=1; printf("Error type B at Line %d: Missing closing parenthesis ')'\n",(@2).first_line);}
       ;
