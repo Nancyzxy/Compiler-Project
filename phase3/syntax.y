@@ -797,7 +797,7 @@ char* translate_def(node* def){
     node* decList = def->child->next;
     char* code = malloc(1024);
     if(strcasecmp(def->child->child->name, "type") == 0){
-        while(decList->child->next != NULL){
+        while(decList->child->next != NULL){//有comma
             node* dec = decList->child;
             if(dec->child->next == NULL){//assign
                 node* varDec = dec->child;
@@ -859,6 +859,15 @@ char* translate_def(node* def){
                 char* tp = new_place();
                 val->t = count1-1;
             }
+        }else{
+            Info* id = symtab_lookup(root, dec->child->child->attribute);
+            char* tp = new_place();
+            id->t = count1-1;
+            tp = new_place();
+            char* code1 = translate_Exp(dec->child->next->next, tp);
+            char* code2 = malloc(64);
+            sprintf(code2, "t%d := %s\n", id->t, tp);
+            sprintf(code, "%s%s",code1,code2);
         }
         }
     else{

@@ -21,3 +21,15 @@
 [INFO] 2023-01-01 21:43:03,164 (irsim.py 567): Total instructions = 10
 [ERROR] 2023-01-01 21:43:03,496 (irsim.py 581): An error occurred at line 2: Illegal memory access
 [ERROR] 2023-01-01 21:43:03,832 (irsim.py 581): An error occurred at line 2: Illegal memory access
+[DEBUG] 2023-01-02 23:55:14,594 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-02 23:55:14,596 (irsim.py 581): Syntax error at line 1:
+FUNCTION main
+[ERROR] 2023-01-02 23:55:14,596 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2023-01-02 23:55:28,024 (irsim.py 620): Parsed arguments: {'irpath': 'out.txt', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-02 23:55:28,025 (irsim.py 581): Syntax error at line 1:
+FUNCTION main
+[ERROR] 2023-01-02 23:55:28,026 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
+[DEBUG] 2023-01-02 23:55:48,792 (irsim.py 620): Parsed arguments: {'irpath': 'out.ir', 'inputs': '', 'logpath': 'irsim.log'}
+[ERROR] 2023-01-02 23:55:48,793 (irsim.py 581): Syntax error at line 1:
+FUNCTION main
+[ERROR] 2023-01-02 23:55:48,794 (irsim.py 581): Cannot find program entrance. Please make sure the 'main' function does exist
