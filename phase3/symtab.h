@@ -53,6 +53,7 @@ typedef struct ParaList
 typedef struct Info
 {
     int a;//0 变量 1数组 2函数 3结构体
+    int t;
     struct Type *type;
     struct Type *return_type;
     struct ParaList* paraList;

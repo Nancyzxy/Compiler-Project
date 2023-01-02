@@ -4,9 +4,4 @@ PARAM t2
 READ t3
 RETURN t3
 FUNCTION main
-READ t6
-READ t7
-ARG t6
-ARG t7
-t5 := CALL add
-WRITE t5
+DEC t4 8

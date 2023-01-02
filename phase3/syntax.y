@@ -30,6 +30,7 @@
     char* translate_stmt(node* stmt);
     char* translate_Exp(node* Exp, char* place);
     char* translate_Args(node* Args, int* arglist);
+    char* translate_def(node* def);
 %}
 
 %union{
@@ -93,6 +94,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                                 val->return_type = NULL;
                                 val->paraList = NULL;
                                 val->a = 0;
+                                val->t = -1;
                                 symtab_insert(root, pointer->child->attribute, *val);
                             }else{//插入结构体的声明
                                 // printf("1");
@@ -102,6 +104,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                                 type->category = STRUCTURE;
                                 info->type = type;
                                 info->a = 3;
+                                info->t = -1;
                                 symtab_insert(root, pointer->child->attribute, *info);
                             }
                         }
@@ -134,6 +137,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                                     val->type = typehead;
                                     val->return_type = NULL;
                                     val->paraList = NULL;
+                                    val->t = -1;
                                     symtab_insert(root, pp->child->attribute, *val);
                                 }    
                             }else {//二维数组
@@ -164,6 +168,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                                     val->type = typehead;
                                     val->return_type = NULL;
                                     val->paraList = NULL;
+                                    val->t = -1;
                                     symtab_insert(root, pp->child->child->attribute, *val);
                                 }
                                 
@@ -214,6 +219,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                                     struct_element->type = struct_type;
                                     struct Info* info0 = malloc(sizeof(Info));
                                     info->type = struct_type;
+                                    info0->t = -1;
                                     symtab_insert(root,struct_element->name,*info0);
                                     struct_element->next = NULL;
                                     type->structure = struct_element;
@@ -244,6 +250,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                                         field->type = element_type;
                                         struct Info* info1 = malloc(sizeof(Info));
                                         info->type = element_type;
+                                        info1->t = -1;
                                         symtab_insert(root,field->name,*info1);
                                         curField->next = field;
                                         // printf("1: %s\n", curField->name);
@@ -254,6 +261,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                                     struct_element = NULL;
                                 }
                                 info->type = type;
+                                info->t = -1;
                                 // printf("%s\n",info->type->name);
                                 symtab_insert(root, $1->child->child->next->attribute, *info);
             }  
@@ -294,6 +302,7 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                 val->a = 2;
                 val->return_type = returnType;
                 val->paraList = paralist;
+                val->t = -1;
                 symtab_insert(root, $2->child->attribute, *val);
                 printf("FUNCTION %s\n", $2->child->attribute);
                 if(strcasecmp($2->child->next->next->name,"RP") != 0){
@@ -305,6 +314,11 @@ ExtDef:  Specifier ExtDecList SEMI {$$ = insert("ExtDef",3,$1,$2,alloNodeC(";","
                         printf("PARAM %s\n", place);
                         varList = varList->child->next->next;
                     }
+                }
+                node* defList = $3->child->next;
+                while(defList->child != NULL){
+                    printf("%s",translate_def(defList->child));
+                    defList = defList->child->next;
                 }
                 node* stmtList = $3->child->next->next;
                 while(stmtList->child != NULL){
@@ -374,6 +388,7 @@ ParamDec: Specifier VarDec {$$ = insert("ParamDec",2,$1,$2);@$ = @1;$$->lineNo=(
                                 type->category = PRIMITIVE;
                                 val->type = type;
                                 val->a = 0;
+                                val->t = -1;
                                 symtab_insert(root, $2->child->attribute, *val);
                             }
                     }
@@ -405,7 +420,9 @@ Stmt: Exp SEMI {$$ = insert("Stmt",2,$1,alloNodeC(";","SEMI"));@$ = @1;$$->lineN
 
 /* local definition */
 DefList: Def DefList {$$ = insert("DefList",2,$1,$2);@$ = @1;$$->lineNo=(@1).first_line;}
-       |    /*empty terminal*/  {$$ = insert("DefList",0);}
+       |    /*empty terminal*/  {$$ = insert("DefList",0);
+       
+       }
        ;
 
 Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$ = @1;$$->lineNo=(@1).first_line;
@@ -426,6 +443,7 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
                                 val->return_type = NULL;
                                 val->paraList = NULL;
                                 val->a = 0;
+                                val->t = -1;
                                 symtab_insert(root, pointer->child->child->attribute, *val);
                                 Type *baseval = type;
                                 Type *cmpVal;
@@ -444,6 +462,7 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
                                 type->category = STRUCTURE;
                                 info->type = type;
                                 info->a = 3;
+                                info->t = -1;
                                 symtab_insert(root, pointer->child->child->attribute, *info);
                             }
                         }
@@ -480,6 +499,7 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
                             val->type = typehead;
                             val->return_type = NULL;
                             val->paraList = NULL;
+                            val->t = -1;
                             symtab_insert(root, pointer->child->child->child->child->attribute, *val);
                             Type *baseval = typehead;
                             Type *cmpVal;
@@ -489,6 +509,8 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
                                     printf("Error type 5 at Line %d: unmatching type on both sides of assignment\n", (@1).first_line);
                                 }
                             }
+                            
+
                         }
                     }else{//一维
                         if(symtab_lookup(root, pointer->child->child->child->attribute).a != -1){//ExtDecList->VarDec->VarDec->ID
@@ -498,6 +520,7 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
                             struct Type *typehead = malloc(sizeof(Type));
                             struct Array *arr = malloc(sizeof(Array));
                             arr->size =atoi(pointer->child->child->next->next->attribute); //int size
+                            arr->size_col = -1;
                             if(strcasecmp($1->child->name, "type") == 0){
                                 typehead->name = $1->child->attribute;
                                 arr->base = malloc(sizeof(Type));
@@ -516,6 +539,7 @@ Def: Specifier DecList SEMI {$$ = insert("Def",3,$1,$2,alloNodeC(";","SEMI"));@$
                             val->type = typehead;
                             val->return_type = NULL;
                             val->paraList = NULL;
+                            val->t = -1;
                             symtab_insert(root, pointer->child->child->child->attribute, *val);
                             Type *baseval = typehead;
                             Type *cmpVal;
@@ -769,6 +793,63 @@ Args: Exp COMMA Args {$2= alloNodeC(",","COMMA"); $$ = insert("Args",3,$1,$2,$3)
 void yyerror(const char *s) {
     fprintf(stderr, "%s at line %d\n", s, yylineno);
 }
+char* translate_def(node* def){
+    node* decList = def->child->next;
+    char* code = malloc(1024);
+    if(strcasecmp(def->child->child->name, "type") == 0){
+        while(decList->child->next != NULL){
+            node* dec = decList->child;
+            if(dec->child->next == NULL){
+                node* varDec = dec->child;
+                if(strcasecmp(varDec->child->name, "vardec") == 0){
+                    while(strcasecmp(varDec->child->name, "vardec") == 0){
+                        varDec = varDec->child;
+                    }
+                    Info arr = symtab_lookup(root, varDec->child->attribute);
+                    int size = 0;
+                    if(arr.type->array->size_col == -1){
+                        size = arr.type->array->size * 4;
+                    }
+                    else {
+                       size = arr.type->array->size * arr.type->array->size_col * 4; 
+                    }
+                    char* tp = new_place();
+                    arr.t = count1 - 1;
+                    sprintf(code, "%sDEC %s %d\n", code, tp, size);
+                }
+            }
+            else{
+                Info id = symtab_lookup(root, dec->child->child->attribute);
+            }
+            decList = decList->child->next->next;
+        }
+        node* dec = decList->child;
+        if(dec->child->next == NULL){
+            node* varDec = dec->child;
+            if(strcasecmp(varDec->child->name, "vardec") == 0){
+                while(strcasecmp(varDec->child->name, "vardec") == 0){
+                    varDec = varDec->child;
+                }
+                Info arr = symtab_lookup(root, varDec->child->attribute);
+                int size = 0;
+                if(arr.type->array->size_col == -1){
+                    size = arr.type->array->size * 4;
+                }
+                else {
+                    size = arr.type->array->size * arr.type->array->size_col * 4; 
+                }
+                char* tp = new_place();
+                arr.t = count1 - 1;
+                char* buff = malloc(1024);
+                sprintf(code, "%sDEC %s %d\n", code, tp, size);
+            }
+        }
+        }
+    else{
+        return NULL;
+    }
+    return code;
+}
 char* translate_cond_Exp(node* Exp, char* lb1, char* lb2){
     if(strcasecmp(Exp->child->name, "LP")==0){
         //LP Exp RP
@@ -870,14 +951,19 @@ char* translate_stmt(node* stmt){
         return buff;
     }
     if(strcasecmp(stmt->child->name, "Compst") == 0){
-        
+        char* code1 = malloc(1024);
+        node* defList = stmt->child->child->next;
+        while(defList->child != NULL){
+            sprintf(code1,"%s%s", code1, translate_def(defList->child));
+            defList = defList->child->next;
+        }
         char* code2 = malloc(1024);
         node* stmtList = stmt->child->child->next->next;
         while(stmtList->child != NULL){
             sprintf(code2,"%s%s",code2,translate_stmt(stmtList->child));
             stmtList = stmtList->child->next;
         }
-        
+        sprintf(code2, "%s%s", code1, code2);
         return code2;
     }
     if(strcasecmp(stmt->child->name, "IF") == 0){
@@ -941,6 +1027,18 @@ char* translate_Exp(node* Exp, char* place){
         return buff;
     }
     if(strcasecmp(Exp->child->name, "id") == 0){
+        if(Exp->child->next == NULL){
+            Info id = symtab_lookup(root, Exp->child->attribute);
+            char* buff = malloc(1024);
+            if(id.t == -1){
+                id.t = count1 - 1;
+                sprintf(buff, "%s := t%d\n", place, id.t);
+            }
+            else{
+                sprintf(buff, "t%d", id.t);
+            }
+            return buff;
+        }
         if(strcasecmp(Exp->child->next->next->name, "RP") == 0){
             Info function = symtab_lookup(root, Exp->child->attribute);
             char* buff = malloc(32);
@@ -962,6 +1060,9 @@ char* translate_Exp(node* Exp, char* place){
             sprintf(buff, "%s%s%s := CALL %s\n", code1, code2, place,Exp->child->attribute);
             return buff;
         }
+    }
+    if(strcasecmp(Exp->child->next->name, "LB") == 0){
+
     }
     return NULL;
 }

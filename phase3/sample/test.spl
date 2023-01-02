@@ -3,5 +3,5 @@ int add(int a, int b){
 }
 int main()
 {
-    write(add(read(), read()));
+   int x[2];
 }
