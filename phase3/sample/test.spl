@@ -1,7 +1,5 @@
 int main(int b)
 {
-   int a;
-   read();
-   write(1);
-   a = main(a);
+   int a[4][5];
+   a[1][2] = 1;
 }
