@@ -1,7 +1,6 @@
 int main()
 {
-   int a[4][5];
-   a[1][2] = 1;
-   write(a[1][2]);
+   int a[4];
+   a[1]= 1;
    return 0;
 }

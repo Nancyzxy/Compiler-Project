@@ -2930,7 +2930,7 @@ char* translate_def(node* def){
                 id->t = count1-1;
                 tp = new_place();
                 char* code1 = translate_Exp(dec->child->next->next, tp);
-                char* code2 = malloc(64);
+                char* code2 = malloc(1024);
                 sprintf(code2, "t%d := %s\n", id->t, tp);
                 sprintf(code, "%s%s%s",code,code1,code2);
             }
@@ -2966,7 +2966,7 @@ char* translate_def(node* def){
             id->t = count1-1;
             tp = new_place();
             char* code1 = translate_Exp(dec->child->next->next, tp);
-            char* code2 = malloc(64);
+            char* code2 = malloc(1024);
             sprintf(code2, "t%d := %s\n", id->t, tp);
             sprintf(code, "%s%s%s",code,code1,code2);
         }
@@ -3195,7 +3195,7 @@ char* translate_Exp(node* Exp, char* place){
             char *buff = malloc(1024); //ID
             char* tp = new_place();
             char* code1 = translate_Exp(Exp->child->next->next, tp);
-            char* code2 = malloc(64);
+            char* code2 = malloc(1024);
             sprintf(code2, "t%d := %s\n", exp1->t, tp);
             sprintf(buff, "%s%s",code1,code2);
             return buff;
@@ -3220,7 +3220,7 @@ char* translate_Exp(node* Exp, char* place){
         char *t2 = new_place();
         char *code1 = translate_Exp(Exp->child, t1);
         char *code2 = translate_Exp(Exp->child->next->next, t2);
-        char *code3 = malloc(64);
+        char *code3 = malloc(1024);
         sprintf(code3, "%s := %s + %s\n", place, t1, t2);
         char *buff = malloc(1024);
         sprintf(buff, "%s%s%s", code1, code2, code3);
@@ -3231,7 +3231,7 @@ char* translate_Exp(node* Exp, char* place){
         char *t2 = new_place();
         char *code1 = translate_Exp(Exp->child, t1);
         char *code2 = translate_Exp(Exp->child->next->next, t2);
-        char *code3 = malloc(64);
+        char *code3 = malloc(1024);
         sprintf(code3, "%s := %s - %s\n", place, t1, t2);
         char *buff = malloc(1024);
         sprintf(buff, "%s%s%s", code1, code2, code3);
@@ -3242,7 +3242,7 @@ char* translate_Exp(node* Exp, char* place){
         char *t2 = new_place();
         char *code1 = translate_Exp(Exp->child, t1);
         char *code2 = translate_Exp(Exp->child->next->next, t2);
-        char *code3 = malloc(64);
+        char *code3 = malloc(1024);
         sprintf(code3, "%s := %s * %s\n", place, t1, t2);
         char *buff = malloc(1024);
         sprintf(buff, "%s%s%s", code1, code2, code3);
@@ -3253,7 +3253,7 @@ char* translate_Exp(node* Exp, char* place){
         char *t2 = new_place();
         char *code1 = translate_Exp(Exp->child, t1);
         char *code2 = translate_Exp(Exp->child->next->next, t2);
-        char *code3 = malloc(64);
+        char *code3 = malloc(1024);
         sprintf(code3, "%s := %s / %s\n", place, t1, t2);
         char *buff = malloc(1024);
         sprintf(buff, "%s%s%s", code1, code2, code3);
@@ -3262,7 +3262,7 @@ char* translate_Exp(node* Exp, char* place){
     if(strcasecmp(Exp->child->name, "minus") == 0){
         char *tp = new_place();
         char *code1 = translate_Exp(Exp->child->next, tp);
-        char *code2 = malloc(64);
+        char *code2 = malloc(1024);
         sprintf(code2, "%s := #0 - %s\n", place, tp);
         char *buff = malloc(1024);
         sprintf(buff, "%s%s", code1, code2);
@@ -3310,27 +3310,44 @@ char* translate_Args(node* Args, int* arglist){
     if(Args->child->next == NULL){
         char* tp = new_place();
         char* code = translate_Exp(Args->child, tp);
+        char* buff = malloc(1024);
+        char * tp1 = new_place();
+        if(strstr(tp,"#")!=NULL){
+            sprintf(buff,"%s%s := %s\n",code,tp1,tp);
+        }else sprintf(buff,"%s",code);
         for(int i = 0; i < 10; i++){
             if(arglist[i] == 0){
-                arglist[i] = atoi(tp+1);
+                if(strstr(tp,"#")!=NULL){
+                    arglist[i] = atoi(tp1+1);
+                }
+                else arglist[i] = atoi(tp+1);
                 break;
             }
         }
-        return code;
+        return buff;
     }
     else{
         char* tp = new_place();
         char* code1 = translate_Exp(Args->child, tp);
+        char* buff = malloc(1024);
+        char * tp1 = new_place();
+        if(strstr(tp,"#")!=NULL){
+            sprintf(buff,"%s%s := %s\n",code1,tp1,tp);
+        }
+        else sprintf(buff,"%s",code1);
         for(int i = 0; i < 10; i++){
             if(arglist[i] == 0){
-                arglist[i] = atoi(tp+1);
+                if(strstr(tp,"#")!=NULL){
+                    arglist[i] = atoi((tp1+1));
+                }
+                else arglist[i] = atoi(tp+1);
                 break;
             }
         }
         char* code2 = translate_Args(Args->child->next->next, arglist);
-        char* buff = malloc(64);
-        sprintf(buff, "%s%s", code1, code2);
-        return buff;
+        char* buff1 = malloc(1024);
+        sprintf(buff1, "%s%s", buff, code2);
+        return buff1;
     }
     
 }
