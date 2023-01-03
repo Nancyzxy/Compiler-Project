@@ -1075,8 +1075,9 @@ char* translate_Exp(node* Exp, char* place){
             char* buff = malloc(1024);
             if(id->t == -1){
                 id->t = count1 - 1;  
-            }sprintf(buff, "%s := t%d\n", place, id->t);
-            return buff;
+            }
+            sprintf(place, "t%d", id->t);
+            return "";
         }
         if(strcasecmp(Exp->child->next->next->name, "RP") == 0){
             Info* function = symtab_lookup(root, Exp->child->attribute);
@@ -1102,8 +1103,8 @@ char* translate_Exp(node* Exp, char* place){
 
     if(strcasecmp(Exp->child->name, "int") == 0){
         char* buff = malloc(1024);
-        sprintf(buff, "%s := #%s\n", place, Exp->child->attribute);
-        return buff;
+        sprintf(place, "#%s", Exp->child->attribute);
+        return "";
     }
     if(strcasecmp(Exp->child->next->name, "assign") == 0){
         if(strcasecmp(Exp->child->child->name,"ID")==0){
@@ -1117,13 +1118,14 @@ char* translate_Exp(node* Exp, char* place){
             return buff;
         }
         if(strcasecmp(Exp->child->child->next->name,"LB")==0){
+            //assign 左边是数组
             char *buff = malloc(1024); 
             char* tp = new_place();
             char* code0 = translate_Exp(Exp->child, tp);
             char* tp1 = new_place();
             char* code1 = translate_Exp(Exp->child->next->next, tp1);
             char *code2 = malloc(1024); //ID
-            sprintf(code2, "%s := %s\n", tp, tp1);
+            sprintf(code2, "*%s := %s\n", tp, tp1);
             sprintf(buff, "%s%s%s",code0,code1,code2);
             return buff;
             // return "null";
@@ -1192,6 +1194,7 @@ char* translate_Exp(node* Exp, char* place){
         char* tp3;
         char* code2 = malloc(1024);
         Info* arr;
+        node* origin_exp = Exp;
         if(strcasecmp(Exp->child->child->name, "ID") != 0){
             Exp = Exp->child;
             arr = symtab_lookup(root, Exp->child->child->attribute);
@@ -1204,12 +1207,18 @@ char* translate_Exp(node* Exp, char* place){
             sprintf(code, "%s%s%s := %s * %s\n", code, code2,tp3, tp3, tp4);
             sprintf(code, "%s%s := %s + %s\n", code, tp2, tp3, tp2);
         }
-        arr = symtab_lookup(root, Exp->child->child->attribute);
-        char* tp4 = new_place();
-        sprintf(code, "%s%s := &t%d + %s\n", code, tp4, arr->t, tp2);
-        sprintf(code, "%s%s := *%s\n", code, place, tp4);
-        return code;
-        // return "null";
+        if(strcasecmp(origin_exp->next->name,"Assign")==0){
+            arr = symtab_lookup(root, Exp->child->child->attribute);
+            sprintf(code, "%s%s := &t%d + %s\n", code, place, arr->t, tp2);
+            return code;
+        }
+        else{
+            char* tp4 = new_place();
+            arr = symtab_lookup(root, Exp->child->child->attribute);
+            sprintf(code, "%s%s := &t%d + %s\n", code, tp4, arr->t, tp2);
+            sprintf(code,"%s%s := *%s\n",code,place,tp4);
+            return code;
+        }
     }
     return "NULL";
 }
