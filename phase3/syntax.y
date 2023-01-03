@@ -1202,10 +1202,11 @@ char* translate_Exp(node* Exp, char* place){
             code2 = translate_Exp(Exp->child->next->next, tp3);
             char* tp4 = new_place();
             char* tp5 = new_place();
+            char* tp6 = new_place();
             sprintf(code, "%s%s := #%d\n", code, tp4, arr->type->array->size_col);
             sprintf(code, "%s%s := %s * #4\n", code, tp4, tp4);
-            sprintf(code, "%s%s%s := %s * %s\n", code, code2,tp3, tp3, tp4);
-            sprintf(code, "%s%s := %s + %s\n", code, tp2, tp3, tp2);
+            sprintf(code, "%s%s%s := %s * %s\n", code, code2,tp6, tp3, tp4);
+            sprintf(code, "%s%s := %s + %s\n", code, tp2, tp6, tp2);
         }
         if(strcasecmp(origin_exp->next->name,"Assign")==0){
             arr = symtab_lookup(root, Exp->child->child->attribute);
@@ -1435,7 +1436,6 @@ node* insert(char * parent,int count, ...){
 
 int main(int argc, char **argv) {
     char *file_path;
-    freopen("out.txt","w",stdout);
     root =  symtab_init();
     struct Info *val = malloc(sizeof(Info));
     struct Type *returnType = malloc(sizeof(Type));
@@ -1478,6 +1478,10 @@ int main(int argc, char **argv) {
             perror(argv[1]);
             return EXIT_FAIL;
         }
+        char* outputName = malloc(32);
+        snprintf(outputName, 16, "%s", file_path);
+        sprintf(outputName,"%s%s",outputName,".ir");
+        freopen(outputName,"w",stdout);
         // yydebug = 1;
         yyparse();
     } else{

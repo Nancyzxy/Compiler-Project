@@ -1,0 +1,22 @@
+FUNCTION sqr :
+PARAM t1
+t2 := t1 * t1
+RETURN t2
+FUNCTION cbc :
+PARAM t5
+t7 := t5 * t5
+t6 := t7 * t5
+RETURN t6
+FUNCTION main :
+READ t14
+t11 := t14
+WRITE t11
+ARG t11
+t18 := CALL sqr
+t12 := t18
+WRITE t12
+ARG t11
+t24 := CALL cbc
+t12 := t24
+WRITE t12
+RETURN #0
